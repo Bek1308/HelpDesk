@@ -1,0 +1,262 @@
+<!-- Overlay -->
+<div class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity"></div>
+
+<!-- Modal -->
+<div class="fixed inset-0 z-50 flex justify-center items-start pt-14 pointer-events-none">
+  <form
+    class="relative w-full max-w-2xl bg-theme-cardbg dark:bg-themedark-cardbg rounded-md shadow-xl pb-6 pt-4 pointer-events-auto flex flex-col max-h-[85vh] overflow-visible"
+    #filterForm="ngForm"
+    (ngSubmit)="save()"
+  >
+    <!-- Header -->
+    <abp-modal-header
+      [title]="'Filters' | localize"
+      (onCloseClick)="close()"
+      class="w-full mb-4"
+    ></abp-modal-header>
+
+    <!-- Scrollable filter list -->
+    <div
+      class="px-6 flex-1 overflow-visible scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg"
+    >
+      <!-- Active Filters -->
+      @for (filter of activeFilters; track filter.key; let i = $index) {
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ filter.label | localize }}
+          </label>
+
+          <div class="col-span-2 relative flex items-center gap-2">
+            @switch (filter.type) {
+              <!-- Select Type -->
+              @case ('select') {
+                <div class="relative w-full overflow-visible dropdown">
+                  <button
+                    type="button"
+                    class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm flex justify-between items-center"
+                    (click)="toggleDropdown(filter.key); $event.stopPropagation()"
+                  >
+                    <span>{{ getDisplayValue(filter) | localize }}</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </button>
+                  @if (dropdownOpen === filter.key) {
+                    <div
+                      class="absolute w-full mt-2 bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-2xl max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[9999]"
+                      (click)="stopPropagation($event)"
+                    >
+                      <div
+                        class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                        (click)="selectOption(filter, null); $event.stopPropagation()"
+                      >
+                        {{ 'All' | localize }}
+                      </div>
+                      @for (option of getFilterDefinition(filter.key)?.options; track option.id) {
+                        <div
+                          class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                          (click)="selectOption(filter, option.id); $event.stopPropagation()"
+                        >
+                          {{ option.name | localize }}
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+
+              <!-- Boolean Type -->
+              @case ('boolean') {
+                <div class="relative w-full overflow-visible dropdown">
+                  <button
+                    type="button"
+                    class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm flex justify-between items-center"
+                    (click)="toggleDropdown(filter.key); $event.stopPropagation()"
+                  >
+                    <span>{{ getDisplayValue(filter) | localize }}</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </button>
+                  @if (dropdownOpen === filter.key) {
+                    <div
+                      class="absolute w-full mt-2 bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-2xl max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[9999]"
+                      (click)="stopPropagation($event)"
+                    >
+                      <div
+                        class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                        (click)="selectOption(filter, null); $event.stopPropagation()"
+                      >
+                        {{ 'All' | localize }}
+                      </div>
+                      <div
+                        class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                        (click)="selectOption(filter, true); $event.stopPropagation()"
+                      >
+                        {{ 'Yes' | localize }}
+                      </div>
+                      <div
+                        class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                        (click)="selectOption(filter, false); $event.stopPropagation()"
+                      >
+                        {{ 'No' | localize }}
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+
+              <!-- Date Range -->
+              @case ('dateRange') {
+                <div class="w-full flex flex-col gap-2 overflow-visible">
+                  @if (!filter.isCustom) {
+                    <div class="relative w-full overflow-visible dropdown">
+                      <button
+                        type="button"
+                        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm flex justify-between items-center"
+                        (click)="toggleDropdown(filter.key); $event.stopPropagation()"
+                      >
+                        <span>{{ getDisplayValue(filter) | localize }}</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                      </button>
+                      @if (dropdownOpen === filter.key) {
+                        <div
+                          class="absolute w-full mt-2 bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-2xl max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[9999]"
+                          (click)="stopPropagation($event)"
+                        >
+                          <div
+                            class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                            (click)="selectInterval(filter, null); $event.stopPropagation()"
+                          >
+                            {{ 'Select Interval' | localize }}
+                          </div>
+                          @for (interval of getFilterDefinition(filter.key)?.intervals; track interval.label) {
+                            <div
+                              class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                              (click)="selectInterval(filter, interval); $event.stopPropagation()"
+                            >
+                              {{ interval.label | localize }}
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                  @if (filter.isCustom) {
+                    <div class="flex gap-2">
+                      <input
+                        type="datetime-local"
+                        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm"
+                        [placeholder]="'Start Date' | localize"
+                        [ngModel]="filter.value?.start | date:'yyyy-MM-ddTHH:mm'"
+                        (ngModelChange)="updateDate(filter, 'start', $event)"
+                        [name]="filter.key + 'Start'"
+                      />
+                      <input
+                        type="datetime-local"
+                        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm"
+                        [placeholder]="'End Date' | localize"
+                        [ngModel]="filter.value?.end | date:'yyyy-MM-ddTHH:mm'"
+                        (ngModelChange)="updateDate(filter, 'end', $event)"
+                        [name]="filter.key + 'End'"
+                      />
+                    </div>
+                  }
+                </div>
+              }
+
+              <!-- Number -->
+              @case ('number') {
+                <div class="flex gap-2">
+                  <input
+                    type="number"
+                    class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm"
+                    [placeholder]="'Min' | localize"
+                    [(ngModel)]="filter.value.min"
+                    [name]="filter.key + 'Min'"
+                    (ngModelChange)="saveFiltersToCache()"
+                  />
+                  <input
+                    type="number"
+                    class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm"
+                    [placeholder]="'Max' | localize"
+                    [(ngModel)]="filter.value.max"
+                    [name]="filter.key + 'Max'"
+                    (ngModelChange)="saveFiltersToCache()"
+                  />
+                </div>
+              }
+            }
+
+            <!-- Remove Button -->
+            <button
+              type="button"
+              class="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300"
+              (click)="removeFilter(filter.key)"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      }
+
+      @if (activeFilters.length === 0) {
+        <div class="text-center text-sm text-theme-bodycolor dark:text-themedark-bodycolor mb-4">
+          {{ 'NoFiltersSelected' | localize }}
+        </div>
+      }
+    </div>
+
+    <!-- Add Filter -->
+    <div class="px-6 mt-4">
+      <div class="flex justify-end">
+        <div class="relative inline-block overflow-visible dropdown">
+          <button
+            type="button"
+            (click)="toggleAddFilterDropdown(); $event.stopPropagation()"
+            [disabled]="availableFilters.length === 0"
+            class="px-4 py-1.5 rounded-md bg-primary dark:bg-primary-300 text-white hover:bg-primary-700 dark:hover:bg-primary-400 transition-all duration-300 ease-in-out text-sm flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            <span>{{ 'AddFilter' | localize }}</span>
+          </button>
+
+          @if (isAddFilterDropdownOpen) {
+            <div
+              class="absolute right-0 mt-2 w-48 bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-2xl max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[9999]"
+              (click)="stopPropagation($event)"
+            >
+              @for (filter of availableFilters; track filter.key) {
+                <div
+                  class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                  (click)="addFilter(filter.key); $event.stopPropagation()"
+                >
+                  {{ filter.label | localize }}
+                </div>
+              }
+              @if (availableFilters.length === 0) {
+                <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+                  {{ 'NoFiltersAvailable' | localize }}
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <abp-modal-footer
+      [cancelDisabled]="false"
+      [saveDisabled]="!filterForm.form.valid"
+      (onCancelClick)="clearFilters()"
+      (onSaveClick)="save()"
+    ></abp-modal-footer>
+  </form>
+</div>

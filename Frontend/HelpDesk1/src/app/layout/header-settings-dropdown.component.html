@@ -1,0 +1,24 @@
+<div class="relative inline-block">
+  <button #button class="p-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-[10%] hover:scale-110 transition-all duration-200" (click)="toggleDropdown($event)">
+    <i data-feather="settings" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600 dark:text-gray-300"></i>
+  </button>
+
+  @if (isOpen) {
+    <div [style.position]="'absolute'" [style.top.px]="button.offsetHeight + 8" [style.right.px]="0" class="bg-theme-lightcartbg dark:bg-themedark-cartbg rounded-md p-3 w-48 shadow-lg z-10" @dropdownAnimation>
+      <ul class="space-y-1 sm:space-y-2">
+        @for (actin of actions; track actin.id) {
+          <li class="flex items-center">
+            <a
+              class="flex items-center w-full px-3 py-2 text-xs sm:text-base text-gray-600 dark:text-gray-300 hover:bg-gray-100  dark:hover:bg-gray-500  rounded-md transition-colors duration-200 cursor-default"
+              (click)="actin.action()"
+            >
+              <i [attr.data-feather]="actin.icon" class="w-3 h-3 sm:w-5 sm:h-5 mr-4 text-gray-600 dark:text-gray-300"></i>
+              {{ actin.name }}
+            </a>
+          </li>
+        }
+      </ul>
+      
+    </div>
+  }
+</div>

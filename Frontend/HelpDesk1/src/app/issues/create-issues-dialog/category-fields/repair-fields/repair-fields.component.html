@@ -1,0 +1,213 @@
+
+<!-- Repair Fields -->
+<ng-container>
+  <!-- Agent Full Name -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="agentFullName"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'Field_AgentFullName' | localize }}
+    </label>
+    <div class="col-span-2 relative">
+      <input
+        type="text"
+        name="agentFullName"
+        id="agentFullName"
+        required
+        [(ngModel)]="issue.repairData.agentFullName"
+        #agentFullNameModel="ngModel"
+        #agentFullNameEl
+        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm"
+      />
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="agentFullNameModel"
+        [controlEl]="agentFullNameEl"
+      ></abp-validation-summary>
+    </div>
+  </div>
+
+  <!-- Agent Number -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="agentNumber"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'Field_AgentNumber' | localize }}
+    </label>
+    <div class="col-span-2 relative">
+      <input
+        type="text"
+        name="agentNumber"
+        id="agentNumber"
+        required
+        [(ngModel)]="issue.repairData.agentNumber"
+        #agentNumberModel="ngModel"
+        #agentNumberEl
+        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm"
+      />
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="agentNumberModel"
+        [controlEl]="agentNumberEl"
+      ></abp-validation-summary>
+    </div>
+  </div>
+
+  <!-- Equipment -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="equipment"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'Field_Equipment' | localize }}
+    </label>
+    <div class="col-span-2 relative">
+      <input
+        type="text"
+        name="equipment"
+        id="equipment"
+        required
+        [(ngModel)]="issue.repairData.equipment"
+        #equipmentModel="ngModel"
+        #equipmentEl
+        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm"
+      />
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="equipmentModel"
+        [controlEl]="equipmentEl"
+      ></abp-validation-summary>
+    </div>
+  </div>
+
+  <!-- Serial Number -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="serialNumber"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'Field_SerialNumber' | localize }}
+    </label>
+    <div class="col-span-2 relative">
+      <input
+        type="text"
+        name="serialNumber"
+        id="serialNumber"
+        required
+        [(ngModel)]="issue.repairData.serialNumber"
+        #serialNumberModel="ngModel"
+        #serialNumberEl
+        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm"
+      />
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="serialNumberModel"
+        [controlEl]="serialNumberEl"
+      ></abp-validation-summary>
+    </div>
+  </div>
+
+  <!-- Issue Description -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="repairIssueDescription"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'Field_IssueDescription' | localize }}
+    </label>
+    <div class="col-span-2 relative">
+      <textarea
+        name="repairIssueDescription"
+        id="repairIssueDescription"
+        required
+        [(ngModel)]="issue.repairData.issueDescription"
+        #repairIssueDescriptionModel="ngModel"
+        #repairIssueDescriptionEl
+        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm"
+        rows="4"
+      ></textarea>
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="repairIssueDescriptionModel"
+        [controlEl]="repairIssueDescriptionEl"
+      ></abp-validation-summary>
+    </div>
+  </div>
+
+  <!-- Work Amount -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="workAmount"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'Field_WorkAmount' | localize }}
+    </label>
+    <div class="col-span-2 relative">
+      <input
+        type="number"
+        name="workAmount"
+        id="workAmount"
+        required
+        [(ngModel)]="issue.repairData.workAmount"
+        #workAmountModel="ngModel"
+        #workAmountEl
+        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm"
+      />
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="workAmountModel"
+        [controlEl]="workAmountEl"
+      ></abp-validation-summary>
+    </div>
+  </div>
+
+  <!-- Replacement Parts -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="replacementParts"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'Field_ReplacementParts' | localize }}
+    </label>
+    <div class="col-span-2 relative">
+      <input
+        type="text"
+        name="replacementParts"
+        id="replacementParts"
+        required
+        [(ngModel)]="issue.repairData.replacementParts"
+        #replacementPartsModel="ngModel"
+        #replacementPartsEl
+        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm"
+      />
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="replacementPartsModel"
+        [controlEl]="replacementPartsEl"
+      ></abp-validation-summary>
+    </div>
+  </div>
+</ng-container>

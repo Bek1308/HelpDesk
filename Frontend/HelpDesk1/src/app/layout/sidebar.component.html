@@ -1,0 +1,19 @@
+<div class="pc-sidebar fixed inset-y-0 z-[1026] bg-theme-sidebarbg dark:bg-themedark-sidebarbg transition-all duration-300 ease-in-out pointer-events-auto backdrop-blur-lg"
+     [ngClass]="{
+       'w-64 shadow-[0_4px_20px_rgba(0,0,5,15.15)]': sidebarExpanded || isMobileSidebarActive, 
+       'w-0 overflow-hidden': !sidebarExpanded && !isMobileSidebarActive, 
+       'max-lg:left-0': isMobileSidebarActive, 
+       'max-lg:-left-64': !isMobileSidebarActive,
+       'dark:shadow-[0_4px_20px_rgba(0,0,0,0.5)]': sidebarExpanded || isMobileSidebarActive
+     }">
+  <div class="navbar-wrapper w-64 bg-inherit relative z-[5]">
+    <sidebar-logo [logoUrl]="logoUrl"></sidebar-logo>
+    <sidebar-menu></sidebar-menu>
+  </div>
+</div>
+
+@if (isMobile && isMobileSidebarActive) {
+  <div class="pc-menu-overlay fixed inset-0 z-[1024] bg-[rgba(0,0,0,0.15)] backdrop-blur-[3px]"
+       (click)="toggleSidebar()">
+  </div>
+}

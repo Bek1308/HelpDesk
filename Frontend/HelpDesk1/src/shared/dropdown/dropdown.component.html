@@ -1,0 +1,13 @@
+<div class="relative inline-block">
+  <!-- Toggle Button -->
+  <button (click)="toggleDropdown($event)" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700">
+    <ng-content select="[dropdown-toggle]"></ng-content>
+  </button>
+
+  <!-- Menu -->
+  @if (isOpen) {
+    <div class="absolute right-0 mt-2 bg-white dark:bg-gray-800 rounded shadow-lg z-50">
+      <ng-content select="[dropdown-menu]"></ng-content>
+    </div>
+  }
+</div>

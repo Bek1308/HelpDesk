@@ -1,0 +1,16 @@
+<header class="bg-theme-headerbg dark:bg-themedark-headerbg h-18 sm:h-[var(--header-height)] flex  items-center justify-between px-2 sm:px-4 py-3 transition-colors duration-300 w-full b shadow-md backdrop-blur-md z-30">
+  <!-- Left side: Mobile menu and Search -->
+  <div class="flex items-center space-x-2 sm:space-x-4">
+    <button #menuButton class="menu-button p-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-[10%] hover:scale-110 transition-all duration-200" (click)="toggleSidebar()">
+      <i data-feather="menu" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600 dark:text-gray-300"></i>
+    </button>
+    <app-search-dropdown></app-search-dropdown>
+  </div>
+  <div class="flex items-center space-x-1 sm:space-x-4 mr-4">
+    <header-language-menu></header-language-menu>
+    <app-theme-dropdown></app-theme-dropdown>
+    <app-settings-dropdown></app-settings-dropdown>
+    <app-notifications-dropdown></app-notifications-dropdown>
+    <header-user-menu></header-user-menu>
+  </div>
+</header>

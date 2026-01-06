@@ -1,0 +1,338 @@
+
+<!-- TechDepartment Fields -->
+<ng-container>
+  <!-- Terminal Number -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="techTerminalNumber"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'TerminalNumber' | localize }}
+    </label>
+    <div class="col-span-2 relative">
+      <input
+        type="text"
+        name="techTerminalNumber"
+        id="techTerminalNumber"
+        required
+        [(ngModel)]="issue.techDepartmentData.terminalNumber"
+        #techTerminalNumberModel="ngModel"
+        #techTerminalNumberEl
+        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm"
+      />
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="techTerminalNumberModel"
+        [controlEl]="techTerminalNumberEl"
+      ></abp-validation-summary>
+    </div>
+  </div>
+
+  <!-- Terminal Name -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="terminalName"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'Field_TerminalName' | localize }}
+    </label>
+    <div class="col-span-2 relative">
+      <input
+        type="text"
+        name="terminalName"
+        id="terminalName"
+        required
+        [(ngModel)]="issue.techDepartmentData.terminalName"
+        #terminalNameModel="ngModel"
+        #terminalNameEl
+        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm"
+      />
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="terminalNameModel"
+        [controlEl]="terminalNameEl"
+      ></abp-validation-summary>
+    </div>
+  </div>
+
+  <!-- Agent ID Dropdown -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="agentId"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'Field_AgentId' | localize }}
+    </label>
+    <div class="col-span-2 relative dropdown">
+      <div
+        class="dropdown-toggle w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm cursor-pointer flex justify-between items-center"
+        (click)="toggleAgentDropdown(); $event.stopPropagation()"
+      >
+        <span>{{ selectedAgent?.number || ('SelectAgent' | localize) }}</span>
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          ></path>
+        </svg>
+      </div>
+      <input
+        type="hidden"
+        name="agentId"
+        [(ngModel)]="issue.techDepartmentData.agentId"
+        #agentIdModel="ngModel"
+        required
+      />
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="agentIdModel"
+      ></abp-validation-summary>
+      <div
+        *ngIf="isAgentDropdownOpen"
+        class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg
+               border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg
+               max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500
+               scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]"
+      >
+        <input
+          type="text"
+          [(ngModel)]="agentSearch"
+          (ngModelChange)="filterAgents()"
+          (click)="stopPropagation($event)"
+          placeholder="{{ 'Search' | localize }}"
+          class="w-full px-3 py-2 border-b text-theme-bodycolor dark:text-themedark-bodycolor
+                 bg-theme-inputbg dark:bg-themedark-inputbg border-theme-inputborder
+                 dark:border-themedark-inputborder text-sm focus:outline-none"
+        />
+        <div
+          *ngFor="let user of filteredAgents"
+          class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor
+                 hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+          (click)="selectAgent(user); $event.stopPropagation()"
+        >
+          {{ user.number }}
+        </div>
+        <div
+          *ngIf="!filteredAgents.length"
+          class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'NoAgentsAvailable' | localize }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agent Number -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="techAgentNumber"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'AgentNumber' | localize }}
+    </label>
+    <div class="col-span-2 relative">
+      <input
+        type="text"
+        name="techAgentNumber"
+        id="techAgentNumber"
+        required
+        [(ngModel)]="issue.techDepartmentData.agentNumber"
+        #techAgentNumberModel="ngModel"
+        #techAgentNumberEl
+        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm"
+        readonly
+      />
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="techAgentNumberModel"
+        [controlEl]="techAgentNumberEl"
+      ></abp-validation-summary>
+    </div>
+  </div>
+
+  <!-- Issue Description -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="techIssueDescription"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'IssueDescription' | localize }}
+    </label>
+    <div class="col-span-2 relative">
+      <textarea
+        name="techIssueDescription"
+        id="techIssueDescription"
+        required
+        [(ngModel)]="issue.techDepartmentData.issueDescription"
+        #techIssueDescriptionModel="ngModel"
+        #techIssueDescriptionEl
+        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm"
+        rows="4"
+      ></textarea>
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="techIssueDescriptionModel"
+        [controlEl]="techIssueDescriptionEl"
+      ></abp-validation-summary>
+    </div>
+  </div>
+
+  <!-- Issue Group Dropdown -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="issueGroupId"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'Field_IssueGroup' | localize }}
+    </label>
+    <div class="col-span-2 relative dropdown">
+      <div
+        class="dropdown-toggle w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm cursor-pointer flex justify-between items-center"
+        (click)="toggleIssueGroupDropdown(); $event.stopPropagation()"
+      >
+        <span>{{ selectedIssueGroup?.name || ('SelectIssueGroup' | localize) }}</span>
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          ></path>
+        </svg>
+      </div>
+      <input
+        type="hidden"
+        name="issueGroupId"
+        [(ngModel)]="issue.techDepartmentData.issueGroupId"
+        #issueGroupIdModel="ngModel"
+      />
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="issueGroupIdModel"
+      ></abp-validation-summary>
+      <div
+        *ngIf="isIssueGroupDropdownOpen"
+        class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg
+               border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg
+               max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500
+               scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]"
+      >
+        <input
+          type="text"
+          [(ngModel)]="issueGroupSearch"
+          (ngModelChange)="filterIssueGroups()"
+          (click)="stopPropagation($event)"
+          placeholder="{{ 'Search' | localize }}"
+          class="w-full px-3 py-2 border-b text-theme-bodycolor dark:text-themedark-bodycolor
+                 bg-theme-inputbg dark:bg-themedark-inputbg border-theme-inputborder
+                 dark:border-themedark-inputborder text-sm focus:outline-none"
+        />
+        <div
+          *ngFor="let issueGroup of filteredIssueGroups"
+          class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor
+                 hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+          (click)="selectIssueGroup(issueGroup); $event.stopPropagation()"
+        >
+          {{ issueGroup.name }}
+        </div>
+        <div
+          *ngIf="!filteredIssueGroups.length"
+          class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'NoIssueGroupsAvailable' | localize }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Terminal Location -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="terminalLocation"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'Field_TerminalLocation' | localize }}
+    </label>
+    <div class="col-span-2 relative">
+      <input
+        type="text"
+        name="terminalLocation"
+        id="terminalLocation"
+        required
+        [(ngModel)]="issue.techDepartmentData.terminalLocation"
+        #terminalLocationModel="ngModel"
+        #terminalLocationEl
+        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm"
+      />
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="terminalLocationModel"
+        [controlEl]="terminalLocationEl"
+      ></abp-validation-summary>
+    </div>
+  </div>
+
+  <!-- City ID -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="cityId"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'Field_City' | localize }}
+    </label>
+    <div class="col-span-2 relative">
+      <input
+        type="number"
+        name="cityId"
+        id="cityId"
+        [(ngModel)]="issue.techDepartmentData.cityId"
+        #cityIdModel="ngModel"
+        #cityIdEl
+        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm"
+      />
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="cityIdModel"
+        [controlEl]="cityIdEl"
+      ></abp-validation-summary>
+    </div>
+  </div>
+</ng-container>

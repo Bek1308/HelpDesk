@@ -1,0 +1,51 @@
+<div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-6 transition-all duration-300 ease-in-out">
+  <h2 class="text-xl sm:text-2xl font-semibold text-theme-bodycolor dark:text-themedark-bodycolor mb-4">
+    История изменений
+  </h2>
+  <div class="relative max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg space-y-8">
+    @for (event of historyList; track event.id; let i = $index) {
+      <div class="relative pl-8">
+        <!-- ICON -->
+        <div
+          class="absolute left-[6px] top-2 w-5 h-5 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-125 z-50"
+          [ngClass]="getRandomIconAndColor().bgColor"
+        >
+          @if (getRandomIconAndColor().icon === 'check') {
+            <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+          } @else if (getRandomIconAndColor().icon === 'edit') {
+            <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M13.586 3.586a2 2 0 112.828 2.828l-9 9a2 2 0 01-2.828 0l-3-3a2 2 0 112.828-2.828L7 11.172l6.586-6.586z"></path>
+            </svg>
+          } @else if (getRandomIconAndColor().icon === 'time') {
+            <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+            </svg>
+          }
+        </div>
+        <!-- CONTENT -->
+        <div
+          class="p-4 rounded-lg transition-all duration-300 ease-in-out"
+          [ngClass]="{
+            'bg-gray-100 dark:bg-themedark-inputbg': getRandomIconAndColor().icon === 'check',
+            'bg-green-50 dark:bg-green-900': getRandomIconAndColor().icon === 'edit',
+            'bg-yellow-50 dark:bg-yellow-900': getRandomIconAndColor().icon === 'time'
+          }"
+        >
+          <p class="text-sm text-theme-bodycolor dark:text-themedark-bodycolor">{{ event.creationTime | date:'dd.MM.yyyy' }}</p>
+          <p class="text-theme-bodycolor dark:text-themedark-bodycolor font-medium">{{ event.action }}</p>
+          <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ event.creatorName }}</p>
+        </div>
+        <!-- UZUN CHIZIQ -->
+        <div
+          class="absolute left-[15px] top-[-20px] w-0.5 bg-gray-200 dark:bg-gray-700"
+          [ngClass]="{
+            'h-[calc(100%+40px)]': i !== historyList.length - 1,
+            'h-[calc(100%+20px)]': i === historyList.length - 1
+          }"
+        ></div>
+      </div>
+    }
+  </div>
+</div>

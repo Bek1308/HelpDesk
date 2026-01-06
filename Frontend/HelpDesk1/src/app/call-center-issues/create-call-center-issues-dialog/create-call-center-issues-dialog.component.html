@@ -1,0 +1,425 @@
+<!-- Overlay -->
+<div
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity"
+  (click)="bsModalRef.hide()"
+></div>
+
+<!-- Modal -->
+<div
+  class="fixed inset-0 z-50 flex justify-center items-start pt-14 pointer-events-none"
+  (click)="$event.stopPropagation()"
+>
+  <form
+    class="relative w-full max-w-2xl bg-theme-cardbg dark:bg-themedark-cardbg rounded-md shadow-xl pb-6 pt-4 pointer-events-auto"
+    autocomplete="off"
+    #createCallCenterIssueForm="ngForm"
+    (ngSubmit)="save()"
+  >
+    <!-- Modal Header -->
+    <abp-modal-header
+      [title]="'CreateCallCenterIssue' | localize"
+      (onCloseClick)="bsModalRef.hide()"
+      class="w-full mb-4"
+    ></abp-modal-header>
+
+    <!-- Form Content -->
+    <div class="px-6 mt-4">
+      <!-- SubCategoryId Dropdown -->
+      <div class="grid grid-cols-3 items-center gap-4 mb-4">
+        <label
+          for="subCategory"
+          class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'SubCategory' | localize }}
+        </label>
+        <div class="col-span-2 relative">
+          <div
+            #subCategoryInput
+            class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                   bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                   focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                   text-sm cursor-pointer flex justify-between items-center"
+            (click)="toggleSubCategoryDropdown()"
+          >
+            <span>{{ selectedSubCategory?.title || ('SelectSubCategory' | localize) }}</span>
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
+          </div>
+          <input
+            type="hidden"
+            name="subCategory"
+            [(ngModel)]="callCenterIssue.subCategoryId"
+            #subCategoryIdModel="ngModel"
+            required
+          />
+          <abp-validation-summary
+            class="text-red-500 mt-1 text-sm"
+            [control]="subCategoryIdModel"
+          ></abp-validation-summary>
+          @if (isSubCategoryDropdownOpen) {
+            <div
+              class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg
+                     border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg
+                     max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500
+                     scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-50"
+            >
+              @for (subCategory of subCategories; track subCategory.id) {
+                <div
+                  class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor
+                         hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                  (click)="selectSubCategory(subCategory)"
+                >
+                  {{ subCategory.title }}
+                </div>
+              }
+              @if (!subCategories.length) {
+                <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+                  {{ 'NoSubCategoriesAvailable' | localize }}
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- ServiceId Dropdown -->
+      <div class="grid grid-cols-3 items-center gap-4 mb-4">
+        <label
+          for="service"
+          class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'Service' | localize }}
+        </label>
+        <div class="col-span-2 relative">
+          <div
+            #serviceInput
+            class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                   bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                   focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                   text-sm cursor-pointer flex justify-between items-center"
+            (click)="toggleServiceDropdown()"
+          >
+            <span>{{ selectedService?.name || ('SelectService' | localize) }}</span>
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
+          </div>
+          <input
+            type="hidden"
+            name="serviceId"
+            [(ngModel)]="callCenterIssue.serviceId"
+            #serviceIdModel="ngModel"
+            required
+          />
+          <abp-validation-summary
+            class="text-red-500 mt-1 text-sm"
+            [control]="serviceIdModel"
+          ></abp-validation-summary>
+          @if (isServiceDropdownOpen) {
+            <div
+              class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg
+                     border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg
+                     max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500
+                     scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-50"
+            >
+              @for (service of services; track service.id) {
+                <div
+                  class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor
+                         hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                  (click)="selectService(service)"
+                >
+                  {{ service.name }}
+                </div>
+              }
+              @if (!services.length) {
+                <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+                  {{ 'NoServicesAvailable' | localize }}
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- WrongNumber -->
+      <div class="grid grid-cols-3 items-center gap-4 mb-4">
+        <label
+          for="wrongNumber"
+          class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'WrongNumber' | localize }}
+        </label>
+        <div class="col-span-2 relative">
+          <input
+            type="text"
+            name="wrongNumber"
+            id="wrongNumber"
+            required
+            [(ngModel)]="callCenterIssue.wrongNumber"
+            #wrongNumberModel="ngModel"
+            #wrongNumberEl
+            class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                   bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                   focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                   text-sm"
+          />
+          <abp-validation-summary
+            class="text-red-500 mt-1 text-sm"
+            [control]="wrongNumberModel"
+            [controlEl]="wrongNumberEl"
+          ></abp-validation-summary>
+        </div>
+      </div>
+
+      <!-- RightNumber -->
+      <div class="grid grid-cols-3 items-center gap-4 mb-4">
+        <label
+          for="rightNumber"
+          class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'RightNumber' | localize }}
+        </label>
+        <div class="col-span-2 relative">
+          <input
+            type="text"
+            name="rightNumber"
+            id="rightNumber"
+            required
+            [(ngModel)]="callCenterIssue.rightNumber"
+            #rightNumberModel="ngModel"
+            #rightNumberEl
+            class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                   bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                   focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                   text-sm"
+          />
+          <abp-validation-summary
+            class="text-red-500 mt-1 text-sm"
+            [control]="rightNumberModel"
+            [controlEl]="rightNumberEl"
+          ></abp-validation-summary>
+        </div>
+      </div>
+
+      <!-- TerminalNumber -->
+      <div class="grid grid-cols-3 items-center gap-4 mb-4">
+        <label
+          for="terminalNumber"
+          class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'TerminalNumber' | localize }}
+        </label>
+        <div class="col-span-2 relative">
+          <input
+            type="text"
+            name="terminalNumber"
+            id="terminalNumber"
+            required
+            [(ngModel)]="callCenterIssue.terminalNumber"
+            #terminalNumberModel="ngModel"
+            #terminalNumberEl
+            class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                   bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                   focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                   text-sm"
+          />
+          <abp-validation-summary
+            class="text-red-500 mt-1 text-sm"
+            [control]="terminalNumberModel"
+            [controlEl]="terminalNumberEl"
+          ></abp-validation-summary>
+        </div>
+      </div>
+
+      <!-- Sum -->
+      <div class="grid grid-cols-3 items-center gap-4 mb-4">
+        <label
+          for="sum"
+          class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'Sum' | localize }}
+        </label>
+        <div class="col-span-2 relative">
+          <input
+            type="text"
+            name="sum"
+            id="sum"
+            required
+            [(ngModel)]="callCenterIssue.sum"
+            #sumModel="ngModel"
+            #sumEl
+            class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                   bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                   focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                   text-sm"
+          />
+          <abp-validation-summary
+            class="text-red-500 mt-1 text-sm"
+            [control]="sumModel"
+            [controlEl]="sumEl"
+          ></abp-validation-summary>
+        </div>
+      </div>
+
+      <!-- CancelledSum -->
+      <div class="grid grid-cols-3 items-center gap-4 mb-4">
+        <label
+          for="cancelledSum"
+          class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'CancelledSum' | localize }}
+        </label>
+        <div class="col-span-2 relative">
+          <input
+            type="text"
+            name="cancelledSum"
+            id="cancelledSum"
+            required
+            [(ngModel)]="callCenterIssue.cancelledSum"
+            #cancelledSumModel="ngModel"
+            #cancelledSumEl
+            class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                   bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                   focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                   text-sm"
+          />
+          <abp-validation-summary
+            class="text-red-500 mt-1 text-sm"
+            [control]="cancelledSumModel"
+            [controlEl]="cancelledSumEl"
+          ></abp-validation-summary>
+        </div>
+      </div>
+
+      <!-- Subscriber -->
+      <div class="grid grid-cols-3 items-center gap-4 mb-4">
+        <label
+          for="subscriber"
+          class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'Subscriber' | localize }}
+        </label>
+        <div class="col-span-2 relative">
+          <input
+            type="text"
+            name="subscriber"
+            id="subscriber"
+            required
+            [(ngModel)]="callCenterIssue.subscriber"
+            #subscriberModel="ngModel"
+            #subscriberEl
+            class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                   bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                   focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                   text-sm"
+          />
+          <abp-validation-summary
+            class="text-red-500 mt-1 text-sm"
+            [control]="subscriberModel"
+            [controlEl]="subscriberEl"
+          ></abp-validation-summary>
+        </div>
+      </div>
+
+      <!-- StatusId Dropdown -->
+      <div class="grid grid-cols-3 items-center gap-4 mb-4">
+        <label
+          for="status"
+          class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'Status' | localize }}
+        </label>
+        <div class="col-span-2 relative">
+          <div
+            #statusInput
+            class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                   bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                   focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                   text-sm cursor-pointer flex justify-between items-center"
+            (click)="toggleStatusDropdown()"
+          >
+            <span>{{ selectedStatus?.title || ('SelectStatus' | localize) }}</span>
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
+          </div>
+          <input
+            type="hidden"
+            name="status"
+            [(ngModel)]="callCenterIssue.statusId"
+            #statusIdModel="ngModel"
+            required
+          />
+          <abp-validation-summary
+            class="text-red-500 mt-1 text-sm"
+            [control]="statusIdModel"
+          ></abp-validation-summary>
+          @if (isStatusDropdownOpen) {
+            <div
+              class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg
+                     border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg
+                     max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500
+                     scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-50"
+            >
+              @for (status of statuses; track status.id) {
+                <div
+                  class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor
+                         hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                  (click)="selectStatus(status)"
+                >
+                  {{ status.title }}
+                </div>
+              }
+              @if (!statuses.length) {
+                <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+                  {{ 'NoStatusesAvailable' | localize }}
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <abp-modal-footer
+      [cancelDisabled]="saving"
+      [saveDisabled]="!createCallCenterIssueForm.form.valid || saving"
+      (onCancelClick)="bsModalRef.hide()"
+    ></abp-modal-footer>
+  </form>
+</div>

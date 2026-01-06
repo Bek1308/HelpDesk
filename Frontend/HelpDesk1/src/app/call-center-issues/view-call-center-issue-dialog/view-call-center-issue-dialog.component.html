@@ -1,0 +1,181 @@
+<!-- Overlay -->
+<div
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity"
+  (click)="bsModalRef.hide()"
+></div>
+
+<!-- Modal -->
+<div
+  class="fixed inset-0 z-50 flex justify-center items-start pt-14 pointer-events-none"
+  role="dialog"
+  aria-labelledby="modal-title"
+>
+  <div
+    class="relative w-full max-w-2xl bg-theme-cardbg dark:bg-themedark-cardbg rounded-md shadow-xl pb-6 pt-4 pointer-events-auto"
+  >
+    <!-- Modal Header -->
+    <abp-modal-header
+      [title]="'ViewCallCenterIssue' | localize"
+      (onCloseClick)="bsModalRef.hide()"
+      class="w-full mb-4"
+      id="modal-title"
+    ></abp-modal-header>
+
+    <!-- Modal Content -->
+    <div class="px-6 mt-4">
+      @if (isLoading) {
+        <div class="text-center">
+          <div class="spinner-border text-primary-500" role="status">
+            <span class="visually-hidden">{{ 'Loading' | localize }}</span>
+          </div>
+        </div>
+      } @else {
+        <!-- SubCategory -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'SubCategory' | localize }}
+          </label>
+          <div class="col-span-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ callCenterIssue.subCategoryName || ('NotAvailable' | localize) }}
+          </div>
+        </div>
+
+        <!-- Service -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'Service' | localize }}
+          </label>
+          <div class="col-span-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ callCenterIssue.serviceName || ('NotAvailable' | localize) }}
+          </div>
+        </div>
+
+        <!-- WrongNumber -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'WrongNumber' | localize }}
+          </label>
+          <div class="col-span-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ callCenterIssue.wrongNumber || ('NotAvailable' | localize) }}
+          </div>
+        </div>
+
+        <!-- RightNumber -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'RightNumber' | localize }}
+          </label>
+          <div class="col-span-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ callCenterIssue.rightNumber || ('NotAvailable' | localize) }}
+          </div>
+        </div>
+
+        <!-- TerminalNumber -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'TerminalNumber' | localize }}
+          </label>
+          <div class="col-span-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ callCenterIssue.terminalNumber || ('NotAvailable' | localize) }}
+          </div>
+        </div>
+
+        <!-- Sum -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'Sum' | localize }}
+          </label>
+          <div class="col-span-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ callCenterIssue.sum || ('NotAvailable' | localize) }}
+          </div>
+        </div>
+
+        <!-- CancelledSum -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'CancelledSum' | localize }}
+          </label>
+          <div class="col-span-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ callCenterIssue.cancelledSum || ('NotAvailable' | localize) }}
+          </div>
+        </div>
+
+        <!-- Subscriber -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'Subscriber' | localize }}
+          </label>
+          <div class="col-span-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ callCenterIssue.subscriber || ('NotAvailable' | localize) }}
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'Status' | localize }}
+          </label>
+          <div class="col-span-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ callCenterIssue.statusName || ('NotAvailable' | localize) }}
+          </div>
+        </div>
+
+        <!-- CreatedBy -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'CreatedBy' | localize }}
+          </label>
+          <div class="col-span-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ callCenterIssue.creatorName || ('NotAvailable' | localize) }} -
+            {{ callCenterIssue.creationTime | date: 'short' }}
+          </div>
+        </div>
+
+        <!-- UpdatedBy -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'UpdatedBy' | localize }}
+          </label>
+          <div class="col-span-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ callCenterIssue.updaterName || ('NotAvailable' | localize) }} -
+            {{ callCenterIssue.updatedAt | date: 'short' }}
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="flex justify-end gap-3 mt-4 mr-6">
+      <button
+        type="button"
+        [disabled]="isLoading"
+        (click)="bsModalRef.hide()"
+        class="px-4 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-shadow shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {{ 'Close' | localize }}
+      </button>
+    </div>
+  </div>
+</div>

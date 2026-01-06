@@ -1,0 +1,59 @@
+﻿<!-- Overlay -->
+<div
+  class="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm z-40 transition-opacity"
+  (click)="hide()"
+></div>
+
+<!-- Modal -->
+<div
+  class="fixed inset-0 z-50 flex justify-center items-start pt-14 pointer-events-none" 
+  (click)="$event.stopPropagation()"
+>
+  <form
+    class="relative w-full max-w-sm bg-theme-cardbg dark:bg-themedark-cardbg rounded-xl shadow-xl pb-6 pt-4 overflow-hidden pointer-events-auto"
+    autocomplete="off"
+    #changeTenantForm="ngForm"
+    (ngSubmit)="save()"
+  >
+    <!-- Floating background circles -->
+    
+    <!-- Modal header -->
+    <abp-modal-header
+      [title]="'ChangeTenant' | localize"
+      (onCloseClick)="bsModalRef.hide()"
+      class="w-full mb-4"
+    ></abp-modal-header>
+
+    <!-- Form body -->
+    <div class="m-6">
+      <label
+        for="tenancyName"
+        class="block text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor mb-2"
+      >
+        {{ 'TenancyName' | localize }}
+      </label>
+      <input
+        type="text"
+        id="tenancyName"
+        name="tenancyName"
+        [(ngModel)]="tenancyName"
+        maxlength="64"
+        class="w-full px-3 py-2 rounded-md border border-theme-inputborder dark:border-themedark-inputborder bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor focus:outline-none focus:ring-2 focus:ring-primary-500 transition pointer-events-auto"
+      />
+      <span
+        class="flex items-center mt-4 text-sm text-theme-secondarytextcolor dark:text-themedark-secondarytextcolor"
+      >
+        <i data-feather="info" class="h-5 w-5 mr-1 text-red-500"></i>
+        {{ 'LeaveEmptyToSwitchToHost' | localize }}
+      </span>
+    </div>
+
+    <!-- Modal footer -->
+    <abp-modal-footer
+      class="w-full border-t border-theme-inputborder dark:border-themedark-inputborder pt-4"
+      [cancelDisabled]="saving"
+      [saveDisabled]="!changeTenantForm.form.valid || saving"
+      (onCancelClick)="bsModalRef.hide()"
+    ></abp-modal-footer>
+  </form>
+</div>

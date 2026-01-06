@@ -1,0 +1,11 @@
+<div class="relative inline-block">
+  <button #button class="p-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-[10%] hover:scale-110 transition-all duration-200" (click)="toggleDropdown($event)">
+    <i data-feather="search" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600 dark:text-gray-300"></i>
+  </button>
+
+  @if (isOpen) {
+    <div [style.position]="'absolute'" [style.top.px]="button.offsetHeight + 8" [style.right.px]="-220" class="rounded-sm w-54 h-12 sm:w-72 sm:h-16 shadow-lg z-10" @dropdownAnimation>
+      <input type="text" placeholder="Search here..." class="bg-theme-lightcartbg dark:bg-themedark-cartbg w-full h-full pl-8 p-2 border-none outline-none  rounded text-md text-gray-600 dark:text-gray-300">
+    </div>
+  }
+</div>

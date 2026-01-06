@@ -1,0 +1,70 @@
+<div class="relative inline-block">
+  <button #button class="p-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-[10%] hover:scale-110 transition-all duration-200" (click)="toggleDropdown($event)">
+    <i data-feather="user" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600 dark:text-gray-300"></i>
+  </button>
+
+  @if (isOpen) {
+   <div
+  [style.position]="'absolute'"
+  [style.top.px]="button.offsetHeight + 8"
+  [style.right.px]="0"
+  class="bg-theme-lightcartbg dark:bg-themedark-cartbg rounded-md w-[60vw] sm:w-64 shadow-lg z-10"
+  @dropdownAnimation
+>
+  <!-- Profil qismi -->
+  <div class="flex items-center p-3 bg-primary  rounded-t-md w-full mb-2 pl-4">
+    <img class="w-10 h-10 rounded-full mr-2" [src]="user.avatar" alt="avatar" />
+    <div class="flex-1">
+      <h6 class="text-sm text-white dark:text-white truncate">
+        {{ user.name }} 🖖
+      </h6>
+      <p class="text-xs text-white dark:text-white truncate">{{ user.email }}</p>
+    </div>
+  </div>
+
+  <!-- Navigatsiya tugmalari -->
+  <div class="mb-2 mx-3">
+    <ul class="space-y-1">
+      <li class="flex items-center">
+        <a
+          href="#"
+          class="flex items-center w-full px-2 py-2 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-500 rounded-md transition-colors duration-200 cursor-pointer"
+        >
+          <i data-feather="settings" class="w-4 h-4 mr-3 text-gray-600 dark:text-gray-300"></i>
+          UnSettings
+        </a>
+      </li>
+      <li class="flex items-center">
+        <a
+          href="#"
+          class="flex items-center w-full px-2 py-2 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-500 rounded-md transition-colors duration-200 cursor-pointer"
+        >
+          <i data-feather="share-2" class="w-4 h-4 mr-3 text-gray-600 dark:text-gray-300"></i>
+          UnShare
+        </a>
+      </li>
+      <li class="flex items-center">
+        <a
+          href="#"
+          class="flex items-center w-full px-2 py-2 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-500 rounded-md transition-colors duration-200 cursor-pointer"
+        >
+          <i data-feather="lock" class="w-4 h-4 mr-3 text-gray-600 dark:text-gray-300"></i>
+           {{ 'UpdatePassword' | localize }}
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Logout tugmasi -->
+  <div class="flex justify-center items-center mx-3 mb-4" (click)="logout()">
+    <a
+      
+      class="flex items-center justify-center w-full px-4 py-2 text-xs text-white bg-primary hover:bg-pimary-600  dark:hover:bg-primary-600 rounded-md transition-colors duration-200 cursor-pointer"
+    >
+      <i data-feather="log-out" class="w-4 h-4 mr-2 text-white"></i>
+      {{ 'Logout' | localize }}
+    </a>
+  </div>
+</div>
+  }
+</div>

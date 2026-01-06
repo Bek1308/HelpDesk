@@ -1,0 +1,10 @@
+<div class="m-header flex items-center justify-center h-16 pr-16 pt-2">
+  @if (logoUrl) {
+    <img [src]="logoUrl" alt="Logo" class="h-16 w-auto" />
+    <h1 class="text-xl font-semibold text-primary dark:text-primary tracking-wide">
+      Help<span class="text-white dark:text-white">DESK</span>
+    </h1>
+  } @else {
+    <div class="logo-sm h-8 w-28 bg-gray-200 dark:bg-gray-700 rounded"></div>
+  }
+</div>

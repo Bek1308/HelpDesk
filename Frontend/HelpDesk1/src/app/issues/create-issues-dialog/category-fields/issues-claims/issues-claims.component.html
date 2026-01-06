@@ -1,0 +1,79 @@
+<!-- Issues Claims -->
+<ng-container>
+  <div class="mb-4">
+    <div *ngFor="let claim of issuesClaims; let i = index" class="mb-2">
+      <div class="grid grid-cols-3 items-center gap-4">
+        <!-- Claim Key -->
+        <div class="col-span-1 relative">
+          <input
+            type="text"
+            [name]="'claimKey' + i"
+            [id]="'claimKey' + i"
+            required
+            [(ngModel)]="claim.claimKey"
+            #claimKeyModel="ngModel"
+            #claimKeyEl
+            class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                   bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                   focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                   text-sm"
+            placeholder="{{ 'ClaimKey' | localize }}"
+          />
+          <abp-validation-summary
+            class="text-red-500 mt-1 text-sm"
+            [control]="claimKeyModel"
+            [controlEl]="claimKeyEl"
+          ></abp-validation-summary>
+        </div>
+        <!-- Claim Value -->
+        <div class="col-span-1 relative">
+          <input
+            type="text"
+            [name]="'claimValue' + i"
+            [id]="'claimValue' + i"
+            required
+            [(ngModel)]="claim.claimValue"
+            #claimValueModel="ngModel"
+            #claimValueEl
+            class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                   bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                   focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                   text-sm"
+            placeholder="{{ 'ClaimValue' | localize }}"
+          />
+          <abp-validation-summary
+            class="text-red-500 mt-1 text-sm"
+            [control]="claimValueModel"
+            [controlEl]="claimValueEl"
+          ></abp-validation-summary>
+        </div>
+        <!-- Remove Button -->
+        <div class="col-span-1">
+          <button
+            type="button"
+            (click)="removeClaim(i)"
+            class="px-3 py-1 bg-red-500 text-white rounded-md text-sm hover:bg-red-600"
+          >
+            {{ 'Remove' | localize }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      *ngIf="!issuesClaims.length"
+      class="text-sm text-theme-bodycolor dark:text-themedark-bodycolor mb-2"
+    >
+      {{ 'NoClaimsAdded' | localize }}
+    </div>
+    <!-- Add Claim Button -->
+    <div class="flex justify-end">
+      <button
+        type="button"
+        (click)="addClaim()"
+        class="px-3 py-1 bg-primary-500 text-white rounded-md text-sm hover:bg-primary-600"
+      >
+        {{ 'AddClaim' | localize }}
+      </button>
+    </div>
+  </div>
+</ng-container>

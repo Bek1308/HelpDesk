@@ -1,0 +1,160 @@
+<div class="min-h-screen p-4 sm:p-6 bg-transparent">
+  <div class="relative transition-all duration-300 ease-in-out">
+    <!-- Header -->
+    <div class="flex flex-col gap-4 mb-6 sm:flex-row sm:justify-between sm:items-center sm:gap-4">
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-theme-bodycolor dark:text-themedark-bodycolor">{{Issue.id}}: {{Issue.title}}</h1>
+        <p class="text-sm text-theme-bodycolor dark:text-themedark-bodycolor mt-2">Создано: {{Issue.creationTime | date:'short':'':'ru-RU'}} | Последнее изменение: {{Issue.lastModificationTime | date:'short':'':'ru-RU'}}</p>
+        <p class="text-sm text-theme-bodycolor dark:text-themedark-bodycolor">Инициатор: {{Issue.reportedByName}}</p>
+      </div>
+    </div>
+
+    <!-- Separator -->
+    <div class="w-full h-px bg-gray-200 dark:bg-gray-700 mb-6"></div>
+
+    <!-- Issue Details -->
+    <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-6 transition-all duration-300 ease-in-out">
+      <button class="w-full text-left flex justify-between items-center" (click)="toggleAccordion('issue-details')">
+        <h2 class="text-xl sm:text-2xl font-semibold text-theme-bodycolor dark:text-themedark-bodycolor">Детали заявки</h2>
+        <svg class="w-5 h-5 text-theme-bodycolor dark:text-themedark-bodycolor transition-transform duration-300" [ngClass]="{'rotate-180': !isIssueDetailsOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      @if (isIssueDetailsOpen) {
+        <div class="mt-4 transition-[max-height,opacity] duration-300 ease-in-out max-h-[1000px] opacity-100">
+          <div class="space-y-4">
+            <div>
+              <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Заголовок</label>
+              <p class="text-theme-bodycolor dark:text-themedark-bodycolor font-medium">{{Issue.title}}</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Описание</label>
+              <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{Issue.description}}</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Статус</label>
+                <select class="w-full mt-1 px-3 py-1.5 rounded-lg border border-theme-inputborder dark:border-themedark-inputborder bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm transition-all duration-300 ease-in-out">
+                  <option value="new" [selected]="Issue.issueStatusName === 'Новая'">Новая</option>
+                  <option value="in_progress">В процессе</option>
+                  <option value="closed">Закрыта</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Приоритет</label>
+                <select class="w-full mt-1 px-3 py-1.5 rounded-lg border border-theme-inputborder dark:border-themedark-inputborder bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm transition-all duration-300 ease-in-out">
+                  <option value="low">Низкий</option>
+                  <option value="medium" [selected]="Issue.priorityName === 'Средний'">Средний</option>
+                  <option value="high">Высокий</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Исполнитель</label>
+              <select class="w-full mt-1 px-3 py-1.5 rounded-lg border border-theme-inputborder dark:border-themedark-inputborder bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm transition-all duration-300 ease-in-out">
+                <option value="10002" selected>Admin User (ID: 10002)</option>
+                <option value="none">Не назначен</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Срок</label>
+              <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{Issue.deadline | date:'short':'':'ru-RU'}}</p>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-2">
+                <div class="h-2.5 rounded-full transition-all duration-300 ease-in-out" [ngClass]="getProgressBarColor()" [style.width.%]="getProgressBarPercentage()"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="max-h-0 opacity-0 overflow-hidden transition-[max-height,opacity] duration-300 ease-in-out"></div>
+      }
+    </div>
+
+    <!-- Call Center Data -->
+    <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-6 transition-all duration-300 ease-in-out">
+      <button class="w-full text-left flex justify-between items-center" (click)="toggleAccordion('call-center-data')">
+        <h2 class="text-xl sm:text-2xl font-semibold text-theme-bodycolor dark:text-themedark-bodycolor">Данные колл-центра</h2>
+        <svg class="w-5 h-5 text-theme-bodycolor dark:text-themedark-bodycolor transition-transform duration-300" [ngClass]="{'rotate-180': !isCallCenterDataOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      @if (isCallCenterDataOpen) {
+        <div class="mt-4 transition-[max-height,opacity] duration-300 ease-in-out max-h-[1000px] opacity-100">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Подкатегория</label>
+              <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{Issue.callCenterData.subCategoryName}}</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Услуга</label>
+              <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{Issue.callCenterData.serviceName}}</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Неверный номер</label>
+              <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{Issue.callCenterData.wrongNumber}}</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Правильный номер</label>
+              <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{Issue.callCenterData.rightNumber}}</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Номер терминала</label>
+              <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{Issue.callCenterData.terminalNumber}}</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Сумма</label>
+              <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{Issue.callCenterData.sum}}</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Отмененная сумма</label>
+              <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{Issue.callCenterData.cancelledSum}}</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Абонент</label>
+              <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{Issue.callCenterData.subscriber}}</p>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="max-h-0 opacity-0 overflow-hidden transition-[max-height,opacity] duration-300 ease-in-out"></div>
+      }
+    </div>
+
+    <!-- Claims Section -->
+    <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-6 transition-all duration-300 ease-in-out">
+      <button class="w-full text-left flex justify-between items-center" (click)="toggleAccordion('claims')">
+        <h2 class="text-xl sm:text-2xl font-semibold text-theme-bodycolor dark:text-themedark-bodycolor">Претензии</h2>
+        <svg class="w-5 h-5 text-theme-bodycolor dark:text-themedark-bodycolor transition-transform duration-300" [ngClass]="{'rotate-180': !isClaimsOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      @if (isClaimsOpen) {
+        <div class="mt-4 transition-[max-height,opacity] duration-300 ease-in-out max-h-[1000px] opacity-100">
+          <div class="space-y-2">
+            @for (claim of Issue.issuesClaims; track claim.id) {
+              <div class="flex justify-between items-center bg-gray-100 dark:bg-themedark-inputbg p-3 rounded-lg">
+                <span class="text-theme-bodycolor dark:text-themedark-bodycolor">{{claim.claimKey}}: {{claim.claimValue}}</span>
+                <button (click)="removeClaim(claim.id)" class="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-all duration-300 ease-in-out">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
+            }
+          </div>
+          <!-- Add New Claim -->
+          <div class="mt-4">
+            <h4 class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Добавить новую претензию</h4>
+            <div class="flex gap-2 mt-2">
+              <input type="text" placeholder="Ключ претензии" [(ngModel)]="newClaimKey" class="flex-1 px-3 py-1.5 rounded-lg border border-theme-inputborder dark:border-themedark-inputborder bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm transition-all duration-300 ease-in-out">
+              <input type="text" placeholder="Значение претензии" [(ngModel)]="newClaimValue" class="flex-1 px-3 py-1.5 rounded-lg border border-theme-inputborder dark:border-themedark-inputborder bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm transition-all duration-300 ease-in-out">
+              <button (click)="addClaim()" class="bg-primary-500 dark:bg-primary-300 text-white px-4 py-1.5 rounded-md hover:bg-primary-700 dark:hover:bg-primary-400 transition-all duration-300 ease-in-out font-medium text-sm">Добавить</button>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="max-h-0 opacity-0 overflow-hidden transition-[max-height,opacity] duration-300 ease-in-out"></div>
+      }
+    </div>
+  </div>
+</div>

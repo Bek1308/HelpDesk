@@ -1,0 +1,183 @@
+<!-- Overlay -->
+<div
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[900] transition-opacity"
+  (click)="bsModalRef.hide()"
+></div>
+
+<!-- Modal -->
+<div
+  class="fixed inset-0 z-[1000] flex justify-center items-start pt-2 pointer-events-none"
+  (click)="closeAllDropdowns()"
+>
+  <form
+    class="relative w-full max-w-2xl bg-theme-cardbg dark:bg-themedark-cardbg rounded-md shadow-xl pt-4 pointer-events-auto"
+    autocomplete="off"
+    #createIssueForm="ngForm"
+    (ngSubmit)="save()"
+  >
+    <!-- Modal Header -->
+    <abp-modal-header
+      [title]="'AddIssues' | localize"
+      (onCloseClick)="bsModalRef.hide()"
+      class="w-full mb-4"
+    ></abp-modal-header>
+
+    <!-- Form Content -->
+    <div class="px-6 mt-6 max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg">
+      <!-- Issue Category Dropdown -->
+      <div class="grid grid-cols-3 items-center gap-4 mb-4">
+        <label
+          for="issueCategory"
+          class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'Category_RequestTypes' | localize }}
+        </label>
+        <div class="col-span-2 relative dropdown">
+          <div
+            class="dropdown-toggle w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                   bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                   focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                   text-sm flex justify-between items-center"
+            (click)="toggleCategoryDropdown(); $event.stopPropagation()"
+          >
+            <span>{{ getCategoryDisplayName(issue.issueCategory) }}</span>
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
+          </div>
+          <input
+            type="hidden"
+            name="issueCategory"
+            [(ngModel)]="issue.issueCategory"
+            #issueCategoryModel="ngModel"
+            required
+          />
+          <abp-validation-summary
+            class="text-red-500 mt-1 text-sm"
+            [control]="issueCategoryModel"
+          ></abp-validation-summary>
+          <div
+            *ngIf="isCategoryDropdownOpen"
+            class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg
+                   border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg
+                   max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500
+                   scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]"
+          >
+            <div
+              *ngFor="let category of categories"
+              class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor
+                     hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+              (click)="selectCategory(category.category); $event.stopPropagation()"
+            >
+              {{ category.displayName }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Common Fields (ClassicFieldsComponent) -->
+      <app-classic-fields
+        [issue]="issue"
+        [form]="createIssueForm"
+        [priorities]="priorities"
+        [statuses]="statuses"
+        [users]="users"
+        [issueId]="undefined"
+        [isEditing]="false"
+        (prioritySelected)="selectPriority($event)"
+        (statusSelected)="selectStatus($event)"
+        (assigneesSelected)="updateAssignees($event)"
+      ></app-classic-fields>
+
+      <!-- Category-Specific Fields -->
+      <ng-container *ngIf="selectedCategory">
+        <app-call-center-fields
+          *ngIf="selectedCategory === 'CallCenter'"
+          [issue]="issue"
+          [subCategories]="subCategories"
+          [services]="services"
+          [form]="createIssueForm"
+          (subCategorySelected)="selectSubCategory($event)"
+          (serviceSelected)="selectService($event)"
+        ></app-call-center-fields>
+        <app-repair-fields
+          *ngIf="selectedCategory === 'Repair'"
+          [issue]="issue"
+          [form]="createIssueForm"
+        ></app-repair-fields>
+        <app-tech-department-fields
+          *ngIf="selectedCategory === 'TechDepartment'"
+          [issue]="issue"
+          [issueGroups]="issueGroups"
+          [users]="users"
+          [form]="createIssueForm"
+          (agentSelected)="selectSingleAgent($event)"
+          (issueGroupSelected)="selectIssueGroup($event)"
+        ></app-tech-department-fields>
+        <!-- Boshqa kodlar o‘zgarmaydi -->
+<app-atm-fields
+  *ngIf="selectedCategory === 'AtmIssues'"
+  [issue]="issue"
+  [subCategories]="subCategories"
+  [form]="createIssueForm"
+  (subCategorySelected)="selectSubCategory($event)"
+></app-atm-fields>
+<!-- Qolgan shablon -->
+        <app-payvand-card-fields
+          *ngIf="selectedCategory === 'PayvandCard'"
+          [issue]="issue"
+          [subCategories]="subCategories"
+          [form]="createIssueForm"
+          (subCategorySelected)="selectSubCategory($event)"
+        ></app-payvand-card-fields>
+        <app-payvand-wallet-fields
+          *ngIf="selectedCategory === 'PayvandWallet'"
+          [issue]="issue"
+          [subCategories]="subCategories"
+          [services]="services"
+          [form]="createIssueForm"
+          (subCategorySelected)="selectSubCategory($event)"
+          (serviceSelected)="selectService($event)"
+        ></app-payvand-wallet-fields>
+      </ng-container>
+
+      <!-- Issues Claims -->
+      <app-issues-claims
+        [issuesClaims]="issue.issuesClaims"
+        [form]="createIssueForm"
+        (claimsUpdated)="updateClaims($event)"
+      ></app-issues-claims>
+    </div>
+
+    <!-- Modal Footer -->
+    <abp-modal-footer
+      [cancelDisabled]="saving"
+      [saveDisabled]="!createIssueForm.form.valid || saving"
+      (onCancelClick)="bsModalRef.hide()"
+    ></abp-modal-footer>
+  </form>
+</div>
+
+<style>
+/* Custom styles for datetime-local input */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5) sepia(1) saturate(5) hue-rotate(175deg);
+  cursor: pointer;
+}
+input[type="datetime-local"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+</style>

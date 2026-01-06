@@ -1,0 +1,119 @@
+<!-- Overlay -->
+<div
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity"
+  (click)="hide()"
+></div>
+
+<!-- Modal -->
+<div
+  class="fixed inset-0 z-50 flex justify-center items-start pt-14 pointer-events-none"
+  (click)="$event.stopPropagation()"
+>
+  <form
+    class="relative w-full max-w-2xl bg-theme-cardbg dark:bg-themedark-cardbg rounded-md shadow-xl pb-6 pt-4 overflow-hidden pointer-events-auto"
+    autocomplete="off"
+    #editTenantForm="ngForm"
+    (ngSubmit)="save()"
+  >
+    <!-- Modal Header -->
+    <abp-modal-header
+      [title]="'EditTenant' | localize"
+      (onCloseClick)="bsModalRef.hide()"
+      class="w-full mb-4"
+    ></abp-modal-header>
+
+    <!-- Form Content -->
+    <div class="px-6 mt-4">
+      <!-- Tenancy Name -->
+      <div class="grid grid-cols-3 items-center gap-4 mb-4 relative">
+        <label
+          for="tenancyName"
+          class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'TenancyName' | localize }}
+        </label>
+        <div class="col-span-2 relative">
+          <input
+            type="text"
+            name="tenancyName"
+            id="tenancyName"
+            minlength="2"
+            maxlength="64"
+            required
+            [(ngModel)]="tenant.tenancyName"
+            #tenancyNameModel="ngModel"
+            #tenancyNameEl
+            class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                   bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                   focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                   text-sm"
+          />
+          <abp-validation-summary
+            class="text-red-500 mt-1 text-sm"
+            [control]="tenancyNameModel"
+            [controlEl]="tenancyNameEl"
+          ></abp-validation-summary>
+        </div>
+      </div>
+
+      <!-- Name -->
+      <div class="grid grid-cols-3 items-center gap-4 mb-4 relative">
+        <label
+          for="name"
+          class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'Name' | localize }}
+        </label>
+        <div class="col-span-2 relative">
+          <input
+            type="text"
+            name="name"
+            id="name"
+            maxlength="128"
+            required
+            [(ngModel)]="tenant.name"
+            #nameModel="ngModel"
+            #nameEl
+            class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                   bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                   focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                   text-sm"
+          />
+          <abp-validation-summary
+            class="text-red-500 mt-1 text-sm"
+            [control]="nameModel"
+            [controlEl]="nameEl"
+          ></abp-validation-summary>
+        </div>
+      </div>
+
+      <!-- Is Active -->
+      <div class="grid grid-cols-3 items-center gap-4 mb-4">
+        <label
+          class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'IsActive' | localize }}
+        </label>
+        <div class="col-span-2">
+          <label class="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              class="h-4 w-4 rounded border border-gray-300 text-primary-600 focus:ring-primary-500"
+              name="isActive"
+              id="isActive"
+              [(ngModel)]="tenant.isActive"
+            />
+            <span class="text-md text-theme-bodycolor dark:text-themedark-bodycolor"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <abp-modal-footer
+      [cancelDisabled]="saving"
+      [saveDisabled]="!editTenantForm.form.valid || saving"
+      (onCancelClick)="bsModalRef.hide()"
+    ></abp-modal-footer>
+  </form>
+</div>

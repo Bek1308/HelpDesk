@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<localizationDictionary culture="tg">
+	<texts>
+		<text name="HomePage" value="Саҳифаи асосӣ" />
+		<text name="About" value="Дар бораи" />
+		<text name="WelcomeMessage" value="Хуш омадед ба HelpDesk!" />
+		<text name="FormIsNotValidMessage" value="Шакл дуруст нест. Лутфан хатоҳоро санҷида ислоҳ кунед." />
+		<text name="TenantNameCanNotBeEmpty" value="Номи иҷорагир набояд холӣ бошад" />
+		<text name="InvalidUserNameOrPassword" value="Номи корбар ё парол нодуруст аст" />
+		<text name="ThereIsNoTenantDefinedWithName{0}" value="Иҷорагир бо номи {0} муайян нашудааст" />
+		<text name="TenantIsNotActive" value="Иҷорагир {0} фаъол нест." />
+		<text name="UserIsNotActiveAndCanNotLogin" value="Корбар {0} фаъол нест ва наметавонад ворид шавад." />
+		<text name="UserEmailIsNotConfirmedAndCanNotLogin">Суроғаи почтаи электронии шумо тасдиқ нашудааст. Шумо наметавонед ворид шавед.</text>
+		<text name="UserLockedOutMessage">Ҳисоби корбар баста шудааст. Лутфан баъдтар кӯшиш кунед.</text>
+		<text name="PleaseEnterLoginInformation" value="Лутфан маълумоти воридшавиро ворид кунед" />
+		<text name="TenancyName" value="Номи иҷорагирӣ" />
+		<text name="UserNameOrEmail" value="Номи корбар ё почта" />
+		<text name="Password" value="Парол" />
+		<text name="ResetPassword" value="Барқарор кардани парол" />
+		<text name="UpdatePassword" value="Навсозии парол" />
+		<text name="RememberMe" value="Марo ба ёд дор" />
+		<text name="LogIn" value="Ворид шудан" />
+		<text name="LoginFailed" value="Воридшавӣ ноком шуд!" />
+		<text name="NameSurname" value="Ному насаб" />
+		<text name="UserName" value="Номи корбар" />
+		<text name="Name" value="Ном" />
+		<text name="Surname" value="Насаб" />
+		<text name="EmailAddress" value="Суроғаи электронӣ" />
+		<text name="Tenants" value="Иҷорагирон" />
+		<text name="SavedSuccessfully" value="Бо муваффақият захира шуд" />
+		<text name="CreateNewTenant" value="Иҷорагири нав эҷод кунед" />
+		<text name="AdminEmailAddress" value="Почтаи электронии админ" />
+		<text name="AdminPassword" value="Пароли админ" />
+		<text name="Save" value="Захира" />
+		<text name="Cancel" value="Бекор кардан" />
+		<text name="TenantName_Regex_Description" value="Номи иҷорагир бояд ҳадди ақал 2 ҳарф бошад, бо ҳарф оғоз шавад ва бо ҳарф, рақам, тире ё зерсатр идома ёбад." />
+		<text name="DefaultPasswordIs" value="Пароли пешфарз {0} аст" />
+		<text name="CanBeEmptyToLoginAsHost" value="Метавонад холӣ бошад барои ворид шудан ҳамчун host." />
+		<text name="Register" value="Сабт шудан" />
+		<text name="OrLoginWith" value="Ё ворид шавед тавассути" />
+		<text name="WaitingForActivationMessage" value="Ҳисоби шумо мунтазири фаъолсозӣ аз ҷониби администратори система аст." />
+		<text name="TenantSelection" value="Интихоби иҷорагир" />
+		<text name="TenantSelection_Detail" value="Лутфан яке аз иҷорагирони зеринро интихоб кунед." />
+		<text name="Logout" value="Баромадан" />
+		<text name="RegisterFormUserNameInvalidMessage">Лутфан суроғаи почтаи электрониро ҳамчун номи корбар ворид накунед.</text>
+		<text name="DatabaseConnectionString" value="Сатри пайвастшавӣ ба базаи додаҳо" />
+		<text name="Users" value="Корбарон" />
+		<text name="IsActive" value="Фаъол аст" />
+		<text name="FullName" value="Номи пурра" />
+		<text name="CreateNewUser" value="Корбари нав эҷод кунед" />
+		<text name="Yes" value="Ҳа" />
+		<text name="No" value="Не" />
+		<text name="Optional" value="Ихтиёрӣ" />
+		<text name="LeaveEmptyToSwitchToHost">Барои гузариш ба host холӣ гузоред</text>
+		<text name="CurrentTenant">Иҷорагири ҷорӣ</text>
+		<text name="NotSelected">Интихоб нашудааст</text>
+		<text name="Change">Тағйир додан</text>
+		<text name="ChangeTenant">Тағйир додани иҷорагир</text>
+		<text name="MultiLevelMenu">Менюи бисёрсатҳӣ</text>
+		<text name="Back">Бозгашт</text>
+		<text name="SuccessfullyRegistered">Бо муваффақият сабт шуд</text>
+		<text name="WaitingForEmailActivation">Суроғаи почтаи электронии шумо бояд фаъол карда шавад</text>
+		<text name="Roles">Нақшҳо</text>
+		<text name="DisplayName">Номи намоишӣ</text>
+		<text name="Edit">Таҳрир</text>
+		<text name="Delete">Нест кардан</text>
+		<text name="CreateNewRole">Нақши нав эҷод кунед</text>
+		<text name="RoleName">Номи нақш</text>
+		<text name="Actions">Амалиётҳо</text>
+		<text name="CouldNotCompleteLoginOperation">Амалиёти воридшавӣ иҷро нашуд. Лутфан баъдтар кӯшиш кунед.</text>
+		<text name="CouldNotValidateExternalUser">Корбари берунӣ тасдиқ нашуд</text>
+		<text name="EditRole">Таҳрири нақш</text>
+		<text name="EditTenant">Таҳрири иҷорагир</text>
+		<text name="EditUser">Таҳрири корбар</text>
+		<text name="TenantIdIsNotActive{0}">TenantId {0} фаъол нест</text>
+		<text name="UnknownTenantId{0}">TenantId {0} номаълум аст</text>
+		<text name="ThisFieldIsRequired">Ин майдон ҳатмӣ аст</text>
+		<text name="PleaseWait">Лутфан интизор шавед...</text>
+		<text name="Administration">Идоракунӣ</text>
+		<text name="ClearAll">Ҳамаро тоза кунед</text>
+		<text name="ClearOthers">Дигаронро тоза кунед</text>
+		<text name="LabelOptions">Имконоти барчасб</text>
+		<text name="Permissions">Иҷозатҳо</text>
+		<text name="RoleDescription">Шарҳи нақш</text>
+		<text name="Refresh">Навсозӣ</text>
+		<text name="Create">Эҷод</text>
+		<text name="UserDetails">Маълумоти корбар</text>
+		<text name="Details">Маълумотҳо</text>
+		<text name="UserRoles">Нақшҳои корбар</text>
+		<text name="ConfirmPassword">Тасдиқи парол</text>
+		<text name="Version">Версия</text>
+		<text name="On">Фаъол</text>
+		<text name="Off">Ғайрифаъол</text>
+		<text name="AreYouSureWantToDelete">Шумо мутмаинед, ки {0}-ро нест кардан мехоҳед?</text>
+		<text name="SuccessfullyDeleted">Бо муваффақият нест карда шуд</text>
+		<text name="StartTyping">Оғози навиштан</text>
+		<text name="Skins">Скинҳо</text>
+		<text name="Settings">Танзимот</text>
+		<text name="Filter">Филтр</text>
+		<text name="CurrentPassword">Пароли ҷорӣ</text>
+		<text name="NewPassword">Пароли нав</text>
+		<text name="ConfirmNewPassword">Тасдиқи пароли нав</text>
+		<text name="PasswordsDoNotMatch">Паролҳо мувофиқ нестанд</text>
+		<text name="PasswordsMustBeAtLeast8CharactersContainLowercaseUppercaseNumber">Паролҳо бояд ҳадди ақал аз 8 аломат иборат бошанд ва ҳарфҳои хурд, калон ва рақамро дар бар гиранд</text>
+		<text name="UserDeleteWarningMessage">Корбар {0} нест карда мешавад.</text>
+		<text name="RoleDeleteWarningMessage">Нақши {0} нест карда мешавад ва аз ҳамаи корбарони вобаста ҷудо карда мешавад.</text>
+		<text name="TenantDeleteWarningMessage">Иҷорагир {0} нест карда мешавад.</text>
+		<text name="SearchWithThreeDot">Ҷустуҷӯ...</text>
+		<text name="PleaseEnterAtLeastNCharacter">Лутфан ҳадди ақал {0} аломат ворид кунед</text>
+		<text name="PleaseEnterNoMoreThanNCharacter">Лутфан на бештар аз {0} аломат ворид кунед</text>
+		<text name="InvalidEmailAddress">Суроғаи почтаи электронӣ нодуруст аст</text>
+		<text name="InvalidPattern">Нодуруст</text>
+		<text name="PairsDoNotMatch">Мувофиқат намекунад</text>
+		<text name="All">Ҳама</text>
+		<text name="TotalRecordsCount">Ҳамагӣ: {0}</text>
+		<text name="Search">Ҷустуҷӯ</text>
+		<text name="Clear">Тоза кардан</text>
+		<text name="ResetPasswordStepOneInfo">1. Пароли администраторро ворид кунед</text>
+		<text name="ResetPasswordStepTwoInfo">2. Ин пароли тасодуфиро нусха кунед, то онро ба корбар фиристед</text>
+		<text name="UsersActivation">Фаъолсозии корбарон</text>
+		<text name="403PageHeader">Манъшуда</text>
+		<text name="403PageDescription">Шумо иҷозат надоред ба ин захира дастрасӣ пайдо кунед. Лутфан бо администратор тамос гиред.</text>
+		<text name="403PageButton">Ба панели идоракунӣ баргардед</text>
+
+		<text name="Light">Равшан</text>
+		<text name="Dark">Торик</text>
+		<text name="Default">Муқаррарӣ</text>
+
+		<text name="Categories">Категорияҳо</text>
+		<text name="Services">Хизматрасониҳо</text>
+		<text name="PriorityLevels">Сатҳҳои афзалият</text>
+		<text name="SubCategories">Зеркатегорияҳо</text>
+
+		<text name="RowsPerPage">Сатҳҳо дар як саҳифа</text>
+
+		<text name="Title">Сарлавҳа</text>
+		<text name="Distance">Масофа</text>
+		<text name="Score">Натиҷа</text>
+		<text name="Price">Нарх</text>
+
+		<text name="CreateNewService">Эҷоди хидмати нав</text>
+		<text name="ServiceName">Номи хидмат</text>
+		<text name="EditService">Таҳрири хидмат</text>
+		<text name="Management">Идоракунӣ</text>
+		<text name="TitleRu">Сарлавҳа (русӣ)</text>
+		<text name="CreateNewPriorityLevel">Эҷоди сатҳи афзалияти нав</text>
+		<text name="EditPriorityLevel">Таҳрири сатҳи афзалият</text>
+		<text name="IssueTypes">Намудҳои дархостҳо</text>
+		<text name="Description">Тавсиф</text>
+		<text name="DescriptionRu">Тавсиф (русӣ)</text>
+		<text name="CreateNewIssuesType">Эҷоди намуди нави дархост</text>
+		<text name="EditIssuesType">Таҳрири намуди дархост</text>
+		<text name="CallCenterIssues">Дархостҳои маркази занг</text>
+		<text name="SubCategory">Зеркатегория</text>
+		<text name="Service">Хидмат</text>
+		<text name="WrongNumber">Рақами нодуруст</text>
+		<text name="RightNumber">Рақами дуруст</text>
+		<text name="TerminalNumber">Рақами терминал</text>
+		<text name="Sum">Миқдори интиқолёфта</text>
+		<text name="CancelledSum">Миқдори бекоршуда</text>
+		<text name="Subscriber">Абонент</text>
+		<text name="Status">Статус</text>
+		<text name="CreatedBy">Эҷодкарда</text>
+		<text name="UpdatedBy">Навсозишуда</text>
+		<text name="CreateCallCenterIssue">Эҷоди дархости маркази занг</text>
+		<text name="EditCallCenterIssue">Таҳрири дархости маркази занг</text>
+
+		
+		<text name="AddIssues" value="Иловаи Дархост" />
+
+		<!-- Categories -->
+		<text name="Category_RequestTypes" value="Навъҳои Дархостҳо" />
+		<text name="Category_CallCenter" value="Дархостҳои Call Center" />
+		<text name="Category_Repair" value="Дархостҳои таъмир" />
+		<text name="Category_TechDepartment" value="Дархостҳои шуъбаи техникӣ" />
+
+		<!-- Common Fields -->
+		<text name="Field_Title" value="Сарлавҳа" />
+		<text name="Field_Description" value="Тавсиф" />
+		<text name="Field_Priority" value="Афзалият" />
+		<text name="Field_Status" value="Вазъият" />
+		<text name="Field_Assignees" value="Масъулон" />
+		<text name="Field_Deadline" value="Санаи Охир!" />
+
+		<!-- CallCenter Fields -->
+		<text name="Field_SubCategory" value="Зеркатегория" />
+		<text name="Field_Service" value="Хизматрасонӣ" />
+		<text name="Field_WrongNumber" value="Рақами нодуруст" />
+		<text name="Field_RightNumber" value="Рақами дуруст" />
+		<text name="Field_TerminalNumber" value="Рақами терминал" />
+		<text name="Field_Sum" value="Маблағ" />
+		<text name="Field_CancelledSum" value="Маблағи бекоршуда" />
+		<text name="Field_Subscriber" value="Муштарӣ" />
+
+		<!-- Repair Fields -->
+		<text name="Field_AgentFullName" value="Номи пурраи агент" />
+		<text name="Field_AgentNumber" value="Рақами агент" />
+		<text name="Field_Equipment" value="Таҷҳизот" />
+		<text name="Field_SerialNumber" value="Рақами силсилавӣ" />
+		<text name="Field_IssueDescription" value="Тавсифи носозӣ" />
+		<text name="Field_WorkAmount" value="Ҳаҷми кор" />
+		<text name="Field_ReplacementParts" value="Қисмҳои ивазшуда" />
+
+		<!-- Tech Department Fields -->
+		<text name="Field_TerminalName" value="Номи терминал" />
+		<text name="Field_AgentId" value="ID агент" />
+		<text name="Field_IssueGroup" value="Гурӯҳи носозӣ" />
+		<text name="Field_TerminalLocation" value="Ҷойгиршавии терминал" />
+		<text name="Field_City" value="Шаҳр" />
+
+		<!-- Permissions -->
+		<text name="Issues" value="Дархост" />
+		<text name="CreateCallCenterIssues" value="Эҷоди дархости Call Center" />
+		<text name="CreateRepairIssues" value="Эҷоди дархости таъмир" />
+		<text name="CreateTechDepartmentIssues" value="Эҷоди дархости шуъбаи техникӣ" />
+		<text name="UpdateIssues" value="Навсозии дархост" />
+		<text name="DeleteIssues" value="Ҳазфи дархост" />
+		<text name="GetAllIssues" value="Дидани ҳамаи дархостҳо" />
+
+
+		<!--Issues History-->
+		<text name="FieldChangedDescription" value="{0} аз '{1}' ба '{2}' аз ҷониби {3} тағйир ёфт" />
+		<text name="FieldCreatedDescription" value="{0} бо арзиши '{1}' аз ҷониби {2} эҷод шуд" />
+	</texts>
+</localizationDictionary>

@@ -1,0 +1,254 @@
+<div class="min-h-screen p-4 sm:p-6 bg-transparent">
+  <div class="relative transition-all duration-300 ease-in-out">
+    <!-- SARLAVHA -->
+    <div class="mb-8">
+      <h1 class="text-3xl sm:text-4xl font-bold text-theme-bodycolor dark:text-themedark-bodycolor">Bonus Systemlar</h1>
+      <p class="text-base mt-1 text-theme-bodycolor dark:text-themedark-bodycolor">Barcha bonus tizimlarni boshqarish</p>
+    </div>
+
+    <!-- HEADER — O‘NGGA YOPISHGAN -->
+    <div class="flex flex-col gap-4 mb-6 sm:flex-row sm:justify-end sm:items-center sm:gap-4">
+
+      <!-- MOBIL ICONLAR → ENDI O'NG TOMONDA! -->
+      <div class="flex items-center gap-2 **justify-end** sm:hidden">
+        <button (click)="toggleView('card')" class="p-1 text-theme-bodycolor dark:text-themedark-bodycolor transition-all duration-300 ease-in-out"
+          [ngClass]="{ 'text-primary-500 dark:text-primary-300': viewMode === 'card', 'hover:text-primary-500 dark:hover:text-primary-300': viewMode !== 'card' }">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
+          </svg>
+        </button>
+        <button (click)="toggleView('table')" class="p-1 text-theme-bodycolor dark:text-themedark-bodycolor transition-all duration-300 ease-in-out"
+          [ngClass]="{ 'text-primary-500 dark:text-primary-300': viewMode === 'table', 'hover:text-primary-500 dark:hover:text-primary-300': viewMode !== 'table' }">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v18H3zM9 3v18m6-18v18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3 w-full sm:w-auto">
+        <input type="text" [(ngModel)]="searchKeyword" (ngModelChange)="applySearch()" placeholder="Qidiruv..."
+          class="w-full sm:w-64 px-4 py-1.5 rounded-lg border border-gray-200 dark:border-themedark-inputborder bg-white dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor placeholder-theme-bodycolor/50 dark:placeholder-themedark-bodycolor/50 focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm transition-all duration-300 ease-in-out"/>
+
+        <button (click)="createSystem()" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white px-4 py-1.5 rounded-md font-medium text-sm flex items-center justify-center sm:justify-start space-x-2 transition-all">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          <span>Yaratish</span>
+        </button>
+
+        <div class="hidden sm:flex items-center gap-3">
+          <button (click)="toggleView('card')" class="text-theme-bodycolor dark:text-themedark-bodycolor hover:text-primary-500 dark:hover:text-primary-300 transition-all duration-300 ease-in-out"
+            [ngClass]="{'text-primary-500 dark:text-primary-300': viewMode === 'card'}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
+            </svg>
+          </button>
+          <button (click)="toggleView('table')" class="text-theme-bodycolor dark:text-themedark-bodycolor hover:text-primary-500 dark:hover:text-primary-300 transition-all duration-300 ease-in-out"
+            [ngClass]="{'text-primary-500 dark:text-primary-300': viewMode === 'table'}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v18H3zM9 3v18m6-18v18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEPARATOR -->
+    <div class="w-full h-px bg-gray-200 dark:bg-gray-700 mb-6"></div>
+
+    <!-- MA'LUMOT YO'Q -->
+    @if (filteredSystems.length === 0) {
+      <div class="text-center py-5 text-theme-bodycolor dark:text-themedark-bodycolor text-lg">
+        <p>Hech narsa topilmadi</p>
+      </div>
+    }
+
+    <!-- CARD VIEW -->
+    @if (viewMode === 'card') {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (system of paginatedSystems; track system.id) {
+          <div class="bg-white dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-6 border border-gray-200 dark:border-themedark-inputborder hover:shadow-lg transition-shadow">
+            <div class="flex justify-between items-start mb-3">
+              <h3 class="text-lg font-bold text-theme-bodycolor dark:text-themedark-bodycolor">{{ system.name }}</h3>
+              <span [class]="system.isActive
+                ? 'px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                : 'px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'">
+                {{ system.isActive ? 'Faol' : 'No faol' }}
+              </span>
+            </div>
+            <p class="text-base text-theme-bodycolor dark:text-themedark-bodycolor mb-4">{{ system.description }}</p>
+            <div class="grid grid-cols-2 gap-3 text-sm mb-4">
+              <div class="flex flex-col">
+                <span class="font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Davriylik:</span>
+                <span class="font-medium text-theme-bodycolor/80 dark:text-themedark-bodycolor/80">{{ system.periodicity }}</span>
+              </div>
+              <div class="flex flex-col">
+                <span class="font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Byudjet:</span>
+                <span class="font-medium text-theme-bodycolor/80 dark:text-themedark-bodycolor/80">{{ system.budgetType }}</span>
+              </div>
+              <div class="flex flex-col">
+                <span class="font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Miqdor:</span>
+                <span class="font-medium text-theme-bodycolor/80 dark:text-themedark-bodycolor/80">{{ system.amount }}</span>
+              </div>
+              <div class="flex flex-col">
+                <span class="font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Qoidalar:</span>
+                <span class="font-medium text-theme-bodycolor/80 dark:text-themedark-bodycolor/80">{{ system.rulesCount }} ta</span>
+              </div>
+            </div>
+            <button (click)="toggleRules(system.id)" class="text-sm text-primary-600 dark:text-primary-300 hover:underline mb-3 block">Qoidalarni ko‘rish</button>
+            @if (expandedRules.has(system.id)) {
+              <div class="space-y-1 text-xs mb-4">
+                @for (rule of system.rules; track rule.condition) {
+                  <div class="bg-gray-50 dark:bg-gray-800 p-2 rounded text-theme-bodycolor/80 dark:text-themedark-bodycolor/80">
+                    {{ rule.condition }} to {{ rule.points }} ball
+                  </div>
+                }
+              </div>
+            }
+            <div class="flex gap-2">
+              <button (click)="openUsers(system.id)" class="flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-xs py-2 rounded text-theme-bodycolor dark:text-themedark-bodycolor font-medium">
+                Foydalanuvchilar ({{ system.usersCount }})
+              </button>
+              <button (click)="toggleDropdown(system.id, $event)" class="p-2 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors dropdown-button">
+                <svg class="w-5 h-5 text-theme-bodycolor dark:text-themedark-bodycolor" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- TABLE VIEW -->
+    @if (viewMode === 'table') {
+      <div class="space-y-4 relative bg-theme-cardbg dark:bg-themedark-cardbg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-6 sm:p-8 pr-8 sm:pr-10">
+        <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg">
+          <table class="w-full border-collapse min-w-[800px]">
+            <thead class="text-base">
+              <tr class="bg-gray-100 dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor">
+                <th class="p-4 text-left font-semibold min-w-[150px] max-w-[200px]">Nomi</th>
+                <th class="p-4 text-left font-semibold min-w-[150px] max-w-[200px]">Davriylik</th>
+                <th class="p-4 text-left font-semibold min-w-[150px] max-w-[200px]">Byudjet</th>
+                <th class="p-4 text-left font-semibold min-w-[150px] max-w-[200px]">Miqdor</th>
+                <th class="p-4 text-left font-semibold min-w-[150px] max-w-[200px]">Qoidalar</th>
+                <th class="p-4 text-left font-semibold min-w-[150px] max-w-[200px]">Foydalanuvchilar</th>
+                <th class="p-4 text-left font-semibold min-w-[150px] max-w-[200px]">Holat</th>
+                <th class="p-4 text-left font-semibold min-w-[60px]">Amallar</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (system of paginatedSystems; track system.id) {
+                <tr class="border-b border-theme-inputborder dark:border-themedark-inputborder hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 ease-in-out">
+                  <td class="p-4 text-sm text-theme-bodycolor dark:text-themedark-bodycolor truncate">{{ system.name }}</td>
+                  <td class="p-4 text-sm text-theme-bodycolor/80 dark:text-themedark-bodycolor/80 truncate">{{ system.periodicity }}</td>
+                  <td class="p-4 text-sm text-theme-bodycolor/80 dark:text-themedark-bodycolor/80 truncate">{{ system.budgetType }}</td>
+                  <td class="p-4 text-sm text-theme-bodycolor/80 dark:text-themedark-bodycolor/80 truncate">{{ system.amount }}</td>
+                  <td class="p-4">
+                    <button (click)="toggleRules(system.id)" class="text-primary-600 dark:text-primary-300 underline text-sm hover:text-primary-700">{{ system.rulesCount }} ta</button>
+                  </td>
+                  <td class="p-4">
+                    <button (click)="openUsers(system.id)" class="text-primary-600 dark:text-primary-300 underline text-sm hover:text-primary-700">{{ system.usersCount }} ta</button>
+                  </td>
+                  <td class="p-4">
+                    <span [class]="system.isActive
+                      ? 'px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500 text-white'
+                      : 'px-3 py-1 rounded-full text-xs font-semibold bg-red-500 text-white'">
+                      {{ system.isActive ? 'Faol' : 'No faol' }}
+                    </span>
+                  </td>
+                  <td class="p-4 relative">
+                    <button (click)="toggleDropdown(system.id, $event)" class="text-theme-bodycolor dark:text-themedark-bodycolor hover:text-primary-500 dark:hover:text-primary-300 transition-all duration-300 ease-in-out dropdown-button">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              }
+              @if (paginatedSystems.length === 0) {
+                <tr>
+                  <td colspan="8" class="p-4 text-center text-theme-bodycolor dark:text-themedark-bodycolor text-sm">Ma'lumot yo'q</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+    <!-- DROPDOWN MENU -->
+    @if (dropdownOpenId !== null) {
+      <div class="fixed z-50 w-48 bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg dropdown-menu"
+        [style.top.px]="dropdownPosition.top" [style.left.px]="dropdownPosition.left">
+        <div (click)="viewSystem(dropdownOpenId)" class="px-3 py-2 text-sm text-green-500 dark:text-green-300 hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer flex items-center space-x-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+          </svg>
+          <span>Tafsilotlar</span>
+        </div>
+        <div (click)="editSystem(dropdownOpenId)" class="px-3 py-2 text-sm text-primary-600 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer flex items-center space-x-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+          </svg>
+          <span>Tahrirlash</span>
+        </div>
+        <div (click)="deleteSystem(dropdownOpenId)" class="px-3 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer flex items-center space-x-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2.2 0 0116.138 21H7.862a2.2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+          </svg>
+          <span>O‘chirish</span>
+        </div>
+      </div>
+    }
+
+    <!-- PAGINATION -->
+    <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+      <div class="relative flex items-center gap-3">
+        <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Sahifada:</label>
+        <div class="relative inline-block w-20">
+          <button type="button" (click)="isRecordsPerPageDropdownOpen = !isRecordsPerPageDropdownOpen"
+            class="w-full px-3 py-1.5 rounded-lg border border-theme-inputborder dark:border-themedark-inputborder bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor flex justify-between items-center focus:outline-none focus:ring-1 focus:ring-primary-500 transition-all text-sm paginator-button">
+            <span>{{ recordsPerPage }}</span>
+            <svg class="w-3.5 h-3.5 transform transition-transform duration-200" [ngClass]="{'rotate-180': isRecordsPerPageDropdownOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          @if (isRecordsPerPageDropdownOpen) {
+            <ul class="absolute z-20 mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-lg shadow-lg max-h-60 overflow-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor text-sm paginator-dropdown">
+              @for (count of predefinedRecordsCountPerPage; track count) {
+                <li class="px-3 py-1.5 hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer" (click)="recordsPerPage = count; onRecordsPerPageChange()">
+                  {{ count }}
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+
+      <div class="flex items-center justify-center gap-2">
+        <button [disabled]="currentPage === 0" (click)="goToFirstPage()" class="px-3 py-1.5 bg-gray-100 dark:bg-themedark-inputbg rounded-lg hover:bg-primary-200 dark:hover:bg-primary-700 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-themedark-bodycolor text-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+          </svg>
+        </button>
+        <button [disabled]="currentPage === 0" (click)="goToPreviousPage()" class="px-3 py-1.5 bg-gray-100 dark:bg-themedark-inputbg rounded-lg hover:bg-primary-200 dark:hover:bg-primary-700 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-themedark-bodycolor text-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <span class="px-3 py-1.5 text-theme-bodycolor dark:text-themedark-bodycolor font-medium text-sm">{{ currentPage + 1 }} / {{ totalPages }}</span>
+        <button [disabled]="currentPage >= totalPages - 1" (click)="goToNextPage()" class="px-3 py-1.5 bg-gray-100 dark:bg-themedark-inputbg rounded-lg hover:bg-primary-200 dark:hover:bg-primary-700 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-themedark-bodycolor text-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+        <button [disabled]="currentPage >= totalPages - 1" (click)="goToLastPage()" class="px-3 py-1.5 bg-gray-100 dark:bg-themedark-inputbg rounded-lg hover:bg-primary-200 dark:hover:bg-primary-700 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-themedark-bodycolor text-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7m-8-14l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

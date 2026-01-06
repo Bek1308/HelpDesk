@@ -1,0 +1,590 @@
+<div class="min-h-screen p-4 sm:p-6 bg-transparent">
+  <div class="relative transition-all duration-300 ease-in-out">
+    <!-- Header -->
+    <div class="flex flex-col gap-4 mb-6 sm:flex-row sm:justify-between sm:items-center sm:gap-4">
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-theme-bodycolor dark:text-themedark-bodycolor">{{Issue.id}}: {{Issue.title}}</h1>
+        <p class="text-sm text-theme-bodycolor dark:text-themedark-bodycolor mt-2">Создано: {{Issue.creationTime | date:'short':'':'ru-RU'}} | Последнее изменение: {{Issue.lastModificationTime | date:'short':'':'ru-RU'}}</p>
+        <p class="text-sm text-theme-bodycolor dark:text-themedark-bodycolor">Инициатор: {{Issue.reportedByName}}</p>
+      </div>
+    </div>
+
+    <!-- Separator -->
+    <div class="w-full h-px bg-gray-200 dark:bg-gray-700 mb-6"></div>
+
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Left Column: Issue Details, Specific Data, Claims, Comments -->
+      <div class="lg:col-span-2 space-y-6">
+        <!-- Issue Details -->
+        <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-6 transition-all duration-300 ease-in-out">
+          <button class="w-full text-left flex justify-between items-center" (click)="toggleAccordion('issue-details')">
+            <h2 class="text-xl sm:text-2xl font-semibold text-theme-bodycolor dark:text-themedark-bodycolor">Детали заявки</h2>
+            <svg class="w-5 h-5 text-theme-bodycolor dark:text-themedark-bodycolor transition-transform duration-300" [ngClass]="{'rotate-180': !isIssueDetailsOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+          @if (isIssueDetailsOpen) {
+            <div class="mt-4 transition-[max-height,opacity] duration-300 ease-in-out max-h-[1000px] opacity-100">
+              <div class="space-y-4">
+                <div>
+                  <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Заголовок</label>
+                  <p class="text-theme-bodycolor dark:text-themedark-bodycolor font-medium">{{Issue.title}}</p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Описание</label>
+                  <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{Issue.description}}</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <!-- Status Dropdown -->
+                  <div>
+                    <label for="status" class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Статус</label>
+                    <div class="relative dropdown">
+                      <div
+                        class="dropdown-toggle w-full px-3 py-1.5 rounded-lg border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm cursor-pointer flex justify-between items-center"
+                        (click)="toggleStatusDropdown(); $event.stopPropagation()"
+                      >
+                        <span>{{ selectedStatus?.title || 'Выберите статус' }}</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                      </div>
+                      <input type="hidden" name="statusId" [(ngModel)]="Issue.issueStatusId" #statusIdModel="ngModel" required />
+                      @if (isStatusDropdownOpen) {
+                        <div class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]">
+                          <input
+                            type="text"
+                            [(ngModel)]="statusSearch"
+                            (ngModelChange)="filterStatuses()"
+                            (click)="stopPropagation($event)"
+                            placeholder="Поиск..."
+                            class="w-full px-3 py-2 border-b text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg border-theme-inputborder dark:border-themedark-inputborder text-sm focus:outline-none"
+                          />
+                          @for (status of filteredStatuses; track status.id) {
+                            <div
+                              class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                              (click)="selectStatus(status); $event.stopPropagation()"
+                            >
+                              {{ status.title }}
+                            </div>
+                          } @empty {
+                            <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+                              Нет доступных статусов
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  </div>
+                  <!-- Priority Dropdown -->
+                  <div>
+                    <label for="priority" class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Приоритет</label>
+                    <div class="relative dropdown">
+                      <div
+                        class="dropdown-toggle w-full px-3 py-1.5 rounded-lg border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm cursor-pointer flex justify-between items-center"
+                        (click)="togglePriorityDropdown(); $event.stopPropagation()"
+                      >
+                        <span>{{ selectedPriority?.title || 'Выберите приоритет' }}</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                      </div>
+                      <input type="hidden" name="priorityId" [(ngModel)]="Issue.priorityId" #priorityIdModel="ngModel" required />
+                      @if (isPriorityDropdownOpen) {
+                        <div class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]">
+                          <input
+                            type="text"
+                            [(ngModel)]="prioritySearch"
+                            (ngModelChange)="filterPriorities()"
+                            (click)="stopPropagation($event)"
+                            placeholder="Поиск..."
+                            class="w-full px-3 py-2 border-b text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg border-theme-inputborder dark:border-themedark-inputborder text-sm focus:outline-none"
+                          />
+                          @for (priority of filteredPriorities; track priority.id) {
+                            <div
+                              class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                              (click)="selectPriority(priority); $event.stopPropagation()"
+                            >
+                              {{ priority.title }}
+                            </div>
+                          } @empty {
+                            <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+                              Нет доступных приоритетов
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </div>
+                <!-- Assignee Users Dropdown -->
+                <div>
+                  <label for="assigneeUserIds" class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Исполнитель</label>
+                  <div class="relative dropdown">
+                    <div
+                      class="dropdown-toggle w-full px-3 py-1.5 rounded-lg border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm cursor-pointer flex justify-between items-center"
+                      (click)="toggleAssigneeUsersDropdown(); $event.stopPropagation()"
+                    >
+                      <span>{{ getSelectedAssigneesDisplay() || 'Выберите исполнителя' }}</span>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                      </svg>
+                    </div>
+                    <input type="hidden" name="assigneeUserIds" [(ngModel)]="Issue.assigneeUserIds" #assigneeUserIdsModel="ngModel" required />
+                    @if (isAssigneeUsersDropdownOpen) {
+                      <div class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]">
+                        <input
+                          type="text"
+                          [(ngModel)]="assigneeSearch"
+                          (ngModelChange)="filterAssignees()"
+                          (click)="stopPropagation($event)"
+                          placeholder="Поиск..."
+                          class="w-full px-3 py-2 border-b text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg border-theme-inputborder dark:border-themedark-inputborder text-sm focus:outline-none"
+                        />
+                        @for (user of filteredAssignees; track user.id) {
+                          <div
+                            class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer flex items-center"
+                            [ngClass]="{'bg-primary-200 dark:bg-primary-800': isAssigneeSelected(user)}"
+                            (click)="toggleAssigneeSelection(user); $event.stopPropagation()"
+                          >
+                            <input
+                              type="checkbox"
+                              [checked]="isAssigneeSelected(user)"
+                              class="mr-2"
+                              (click)="stopPropagation($event)"
+                            />
+                            {{ user.number }}
+                          </div>
+                        } @empty {
+                          <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor">
+                            Нет доступных пользователей
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Срок</label>
+                  <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{Issue.deadline | date:'short':'':'ru-RU'}}</p>
+                  <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-2">
+                    <div class="h-2.5 rounded-full transition-all duration-300 ease-in-out" [ngClass]="getProgressBarColor()" [style.width.%]="getProgressBarPercentage()"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          } @else {
+            <div class="mt-4 transition-[max-height,opacity] duration-300 ease-in-out max-h-0 opacity-0 overflow-hidden"></div>
+          }
+        </div>
+
+        <!-- Specific Issue Data -->
+        <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-6 transition-all duration-300 ease-in-out">
+          <button class="w-full text-left flex justify-between items-center" (click)="toggleAccordion('call-center-data')">
+            <h2 class="text-xl sm:text-2xl font-semibold text-theme-bodycolor dark:text-themedark-bodycolor">{{ getIssueCategoryDisplayName(Issue.issueCategory) }}</h2>
+            <svg class="w-5 h-5 text-theme-bodycolor dark:text-themedark-bodycolor transition-transform duration-300" [ngClass]="{'rotate-180': !isCallCenterDataOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+          @if (isCallCenterDataOpen) {
+            <div class="mt-4 transition-[max-height,opacity] duration-300 ease-in-out max-h-[1000px] opacity-100">
+              @switch (Issue.issueCategory) {
+                @case ('CallCenter') {
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('SubCategory') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.callCenterData?.subCategoryName || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('Service') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.callCenterData?.serviceName || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('WrongNumber') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.callCenterData?.wrongNumber || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('RightNumber') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.callCenterData?.rightNumber || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('TerminalNumber') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.callCenterData?.terminalNumber || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('Sum') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.callCenterData?.sum || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('CancelledSum') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.callCenterData?.cancelledSum || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('Subscriber') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.callCenterData?.subscriber || '-' }}</p>
+                    </div>
+                  </div>
+                }
+                @case ('Repair') {
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('AgentFullName') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.repairData?.agentFullName || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('AgentNumber') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.repairData?.agentNumber || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('Equipment') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.repairData?.equipment || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('SerialNumber') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.repairData?.serialNumber || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('IssueDescription') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.repairData?.issueDescription || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('WorkAmount') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.repairData?.workAmount || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('ReplacementParts') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.repairData?.replacementParts || '-' }}</p>
+                    </div>
+                  </div>
+                }
+                @case ('TechDepartment') {
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('TerminalNumber') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.techDepartmentData?.terminalNumber || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('TerminalName') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.techDepartmentData?.terminalName || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('AgentNumber') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.techDepartmentData?.agentNumber || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('IssueDescription') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.techDepartmentData?.issueDescription || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('IssueGroupName') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.techDepartmentData?.issueGroupName || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('TerminalLocation') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.techDepartmentData?.terminalLocation || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('CityName') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.techDepartmentData?.cityName || '-' }}</p>
+                    </div>
+                  </div>
+                }
+                @case ('ATM') {
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('ATMNumber') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.atmData?.atmNumber || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('Reason') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.atmData?.reason || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('IssuingBank') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.atmData?.issuingBank || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('Amount') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.atmData?.amount || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('PhoneNumber') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.atmData?.phoneNumber || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('SubCategoryName') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.atmData?.subCategoryName || '-' }}</p>
+                    </div>
+                  </div>
+                }
+                @case ('PayvandWallet') {
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('WrongNumber') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.payvandWalletData?.wrongNumber || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('RightNumber') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.payvandWalletData?.rightNumber || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('ServiceName') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.payvandWalletData?.serviceName || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('Amount') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.payvandWalletData?.amount || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('SubCategoryName') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.payvandWalletData?.subCategoryName || '-' }}</p>
+                    </div>
+                  </div>
+                }
+                @case ('PayvandCard') {
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('WrongNumber') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.payvandCardData?.wrongNumber || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('RightNumber') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.payvandCardData?.rightNumber || '-' }}</p>
+                    </div>
+                    <div>
+                      <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ l('SubCategoryName') }}</label>
+                      <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ Issue.payvandCardData?.subCategoryName || '-' }}</p>
+                    </div>
+                  </div>
+                }
+                @default {
+                  <div class="text-theme-bodycolor dark:text-themedark-bodycolor">
+                    {{ l('NoSpecificDataAvailable') }}
+                  </div>
+                }
+              }
+            </div>
+          } @else {
+            <div class="mt-4 transition-[max-height,opacity] duration-300 ease-in-out max-h-0 opacity-0 overflow-hidden"></div>
+          }
+        </div>
+
+        <!-- Claims Section -->
+        <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-6 transition-all duration-300 ease-in-out">
+          <button class="w-full text-left flex justify-between items-center" (click)="toggleAccordion('claims')">
+            <h2 class="text-xl sm:text-2xl font-semibold text-theme-bodycolor dark:text-themedark-bodycolor">Претензии</h2>
+            <svg class="w-5 h-5 text-theme-bodycolor dark:text-themedark-bodycolor transition-transform duration-300" [ngClass]="{'rotate-180': !isClaimsOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+          @if (isClaimsOpen) {
+            <div class="mt-4 transition-[max-height,opacity] duration-300 ease-in-out max-h-[1000px] opacity-100">
+              <div class="space-y-2">
+                @for (claim of Issue.issuesClaims; track claim.id) {
+                  <div class="flex justify-between items-center bg-gray-100 dark:bg-themedark-inputbg p-3 rounded-lg">
+                    <span class="text-theme-bodycolor dark:text-themedark-bodycolor">{{claim.claimKey}}: {{claim.claimValue}}</span>
+                    <button (click)="removeClaim(claim.id)" class="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-all duration-300 ease-in-out">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      </svg>
+                    </button>
+                  </div>
+                }
+                <!-- Add New Claim -->
+                <div class="mt-4">
+                  <h4 class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Добавить новую претензию</h4>
+                  <div class="flex gap-2 mt-2">
+                    <input type="text" placeholder="Ключ претензии" [(ngModel)]="newClaimKey" class="flex-1 px-3 py-1.5 rounded-lg border border-theme-inputborder dark:border-themedark-inputborder bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm transition-all duration-300 ease-in-out">
+                    <input type="text" placeholder="Значение претензии" [(ngModel)]="newClaimValue" class="flex-1 px-3 py-1.5 rounded-lg border border-theme-inputborder dark:border-themedark-inputborder bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm transition-all duration-300 ease-in-out">
+                    <button (click)="addClaim()" class="bg-primary-500 dark:bg-primary-300 text-white px-4 py-1.5 rounded-md hover:bg-primary-700 dark:hover:bg-primary-400 transition-all duration-300 ease-in-out font-medium text-sm">Добавить</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          } @else {
+            <div class="mt-4 transition-[max-height,opacity] duration-300 ease-in-out max-h-0 opacity-0 overflow-hidden"></div>
+          }
+        </div>
+
+        <!-- Comments Section -->
+        <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-6 transition-all duration-300 ease-in-out">
+          <button class="w-full text-left flex justify-between items-center" (click)="toggleAccordion('comments')">
+            <h2 class="text-xl sm:text-2xl font-semibold text-theme-bodycolor dark:text-themedark-bodycolor">Комментарии</h2>
+            <svg class="w-5 h-5 text-theme-bodycolor dark:text-themedark-bodycolor transition-transform duration-300" [ngClass]="{'rotate-180': !isCommentsOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+          @if (isCommentsOpen) {
+            <div class="mt-4 transition-[max-height,opacity] duration-300 ease-in-out max-h-[1000px] opacity-100">
+              <div class="max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg space-y-4">
+                @for (comment of comments; track comment.id) {
+                  <div class="relative bg-gray-100 dark:bg-themedark-inputbg mr-4 p-4 rounded-lg transition-all duration-300 ease-in-out">
+                    <button class="dropdown-button absolute top-2 right-2 text-theme-bodycolor dark:text-themedark-bodycolor hover:text-primary-500 dark:hover:text-primary-300 transition-all duration-300 ease-in-out" (click)="toggleDropdown(comment.id, $event)" [disabled]="!canEditComment(comment) && !canDeleteComment(comment)">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                      </svg>
+                    </button>
+                    @if (dropdownOpenId === comment.id && dropdownPosition) {
+                      <div class="dropdown-menu fixed z-50 w-48 bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg" [ngStyle]="{'top.px': dropdownPosition.top, 'left.px': dropdownPosition.left}">
+                        @if (canEditComment(comment)) {
+                          <div (click)="editComment(comment.id)" class="px-3 py-2 text-sm text-primary-600 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900 hover:text-primary-700 dark:hover:text-primary-400 cursor-pointer flex items-center space-x-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            <span>Редактировать</span>
+                          </div>
+                        }
+                        @if (canDeleteComment(comment)) {
+                          <div (click)="deleteComment(comment.id)" class="px-3 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-primary-100 dark:hover:bg-primary-900 hover:text-red-600 dark:hover:text-red-300 cursor-pointer flex items-center space-x-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            <span>Удалить</span>
+                          </div>
+                        }
+                      </div>
+                    }
+                    <div class="flex justify-between items-center">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-primary-500 dark:bg-primary-300 text-white rounded-full flex items-center justify-center text-lg font-bold">{{comment.creatorFullName.charAt(0)}}</div>
+                        <div>
+                          <span class="font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{comment.creatorFullName}}</span>
+                          <p class="text-sm text-theme-bodycolor dark:text-themedark-bodycolor">{{comment.creationTime | date:'dd.MM.yyyy'}}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="mt-2 text-theme-bodycolor dark:text-themedark-bodycolor">{{comment.content}}</p>
+                    @if (comment.fileName) {
+                      <div class="mt-2">
+                        <a href="#" (click)="downloadFile(comment); $event.preventDefault()" class="text-primary-500 dark:text-primary-300 hover:text-primary-600 dark:hover:text-primary-400 text-sm flex items-center gap-1 transition-all duration-300 ease-in-out">
+                          @if (getFileType(comment.fileName) === 'image') {
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                          } @else {
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12h2m0 0h2m-2 0v2m-2v-2"></path>
+                            </svg>
+                          }
+                          {{comment.fileName}}
+                        </a>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+              <!-- Add Comment -->
+              <div class="mt-4">
+                <textarea [(ngModel)]="newComment" class="w-full px-3 py-1.5 rounded-lg border border-theme-inputborder dark:border-themedark-inputborder bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm transition-all duration-300 ease-in-out" rows="4" placeholder="Добавить комментарий..."></textarea>
+                @if (editingCommentId && editingCommentFileName && !selectedFile) {
+                  <div class="mt-2 text-sm text-primary-500 dark:text-primary-300 flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12h2m0 0h2m-2 0v2m-2v-2"></path>
+                    </svg>
+                    {{ editingCommentFileName }}
+                  </div>
+                }
+                @if (selectedFile) {
+                  <div class="mt-2 text-sm text-primary-500 dark:text-primary-300 flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12h2m0 0h2m-2 0v2m-2v-2"></path>
+                    </svg>
+                    {{ selectedFile.name }}
+                  </div>
+                }
+                <div class="flex items-center gap-2 mt-2">
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="file" (change)="onFileChange($event)" class="hidden" accept="image/*,.pdf,.txt">
+                    <div class="bg-primary-500 dark:bg-primary-300 text-white px-4 py-1.5 rounded-md hover:bg-primary-700 dark:hover:bg-primary-400 transition-all duration-300 ease-in-out font-medium text-sm flex items-center space-x-2">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 002.828 2.828L18 9.828V7m-6 8v5m-3-3h6"></path>
+                      </svg>
+                      <span>Выбрать файл</span>
+                    </div>
+                  </label>
+                  <button [disabled]="!newComment" (click)="addComment()" class="bg-primary-500 dark:bg-primary-300 text-white px-4 py-1.5 rounded-md hover:bg-primary-700 dark:hover:bg-primary-400 transition-all duration-300 ease-in-out font-medium text-sm flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span>{{ editingCommentId ? 'Сохранить' : 'Отправить' }}</span>
+                  </button>
+                  @if (editingCommentId) {
+                    <button (click)="cancelEdit()" class="bg-gray-500 dark:bg-gray-400 text-white px-4 py-1.5 rounded-md hover:bg-gray-600 dark:hover:bg-gray-300 transition-all duration-300 ease-in-out font-medium text-sm flex items-center space-x-2">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      </svg>
+                      <span>Отмена</span>
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          } @else {
+            <div class="mt-4 transition-[max-height,opacity] duration-300 ease-in-out max-h-0 opacity-0 overflow-hidden"></div>
+          }
+        </div>
+      </div>
+
+      <!-- Right Column: History -->
+      <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-6 transition-all duration-300 ease-in-out">
+        <h2 class="text-xl sm:text-2xl font-semibold text-theme-bodycolor dark:text-themedark-bodycolor mb-4">История изменений</h2>
+        <div class="relative max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg space-y-8">
+          @for (event of historyList; track event.id; let i = $index) {
+            <div class="relative pl-8">
+              <!-- ICON -->
+              <div
+                class="absolute left-[6px] top-2 w-5 h-5 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-125 z-50"
+                [ngClass]="getRandomIconAndColor(event.id).bgColor"
+              >
+                @switch (getRandomIconAndColor(event.id).icon) {
+                  @case ('check') {
+                    <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                  }
+                  @case ('edit') {
+                    <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-9 9a2 2 0 01-2.828 0l-3-3a2 2 0 112.828-2.828L7 11.172l6.586-6.586z"></path>
+                    </svg>
+                  }
+                  @case ('time') {
+                    <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                    </svg>
+                  }
+                  @case ('user') {
+                    <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                    </svg>
+                  }
+                  @case ('plus') {
+                    <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
+                    </svg>
+                  }
+                }
+              </div>
+              <!-- CONTENT -->
+              <div
+                class="p-4 rounded-lg transition-all duration-300 ease-in-out"
+                [ngClass]="getRandomIconAndColor(event.id).bgColorContent"
+              >
+                <p class="text-sm text-theme-bodycolor dark:text-themedark-bodycolor">{{ event.creationTime | date:'dd.MM.yyyy HH:mm' }}</p>
+                <p class="text-theme-bodycolor dark:text-themedark-bodycolor font-medium">{{ event.creatorName }}</p>
+                <p class="text-theme-bodycolor dark:text-themedark-bodycolor">{{ event.localizedDescription }}</p>
+              </div>
+              <!-- UZUN CHIZIQ -->
+              <div
+                class="absolute left-[15px] top-[-20px] w-0.5 bg-gray-200 dark:bg-gray-700"
+                [ngClass]="{
+                  'h-[calc(100%+40px)]': i !== historyList.length - 1,
+                  'h-[calc(100%+20px)]': i === historyList.length - 1
+                }"
+              ></div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

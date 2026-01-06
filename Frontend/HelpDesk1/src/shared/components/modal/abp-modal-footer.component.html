@@ -1,0 +1,20 @@
+<div class="flex items-center justify-between border-t-2 border-gray-200 dark:border-gray-700 bg-theme-cardbg dark:bg-themedark-cardbg rounded-b-sm  mt-4 px-6 py-6">
+  <!-- Cancel button (chap taraf) -->
+  <button
+    type="button"
+    [disabled]="cancelDisabled()"
+    (click)="onCancelClick.emit($event)"
+    class="px-4 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-shadow shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    {{ cancelLabel() }}
+  </button>
+
+  <!-- Save button (o‘ng taraf) -->
+  <button
+    type="submit"
+    [disabled]="saveDisabled()"
+    class="px-4 py-1 rounded-md bg-primary-500 text-white hover:bg-primary-600 transition-shadow shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+  >
+    {{ saveLabel() }}
+  </button>
+</div>

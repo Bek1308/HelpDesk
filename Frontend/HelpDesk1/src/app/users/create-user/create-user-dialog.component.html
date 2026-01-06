@@ -1,0 +1,306 @@
+<!-- Overlay -->
+<div
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity"
+  (click)="hide()"
+></div>
+
+<!-- Modal -->
+<div
+  class="fixed inset-0 z-50 flex justify-center items-start pt-14 pointer-events-none"
+  (click)="$event.stopPropagation()"
+>
+  <form
+    class="relative w-full max-w-2xl bg-theme-cardbg dark:bg-themedark-cardbg rounded-md shadow-xl pb-6 pt-4 overflow-hidden pointer-events-auto"
+    autocomplete="off"
+    #createUserModal="ngForm"
+    (ngSubmit)="save()"
+  >
+    <!-- Modal Header -->
+    <abp-modal-header
+      [title]="'CreateNewUser' | localize"
+      (onCloseClick)="bsModalRef.hide()"
+      class="w-full mb-4"
+    ></abp-modal-header>
+
+    <!-- Tabs -->
+    <div class="px-6 mt-2">
+      <nav class="flex space-x-1 border-b border-gray-200 dark:border-gray-700">
+        <button
+          type="button"
+          class="relative px-4 py-2 text-sm font-medium rounded-t-lg transition-all duration-300 ease-in-out"
+          [ngClass]="{
+            'text-primary-600 dark:text-primary-300 border-t border-l border-r border-b-2 border-primary-600': activeTab === 'details',
+            'text-gray-600 dark:text-gray-400 hover:border-t hover:border-l hover:border-r hover:border-gray-400': activeTab !== 'details'
+          }"
+          (click)="activeTab = 'details'"
+        >
+          <span class="flex items-center space-x-2">
+            <i data-feather="file-text"></i>
+            <span>{{ 'UserDetails' | localize }}</span>
+          </span>
+        </button>
+        <button
+          type="button"
+          class="relative px-4 py-2 text-sm font-medium rounded-t-lg transition-all duration-300 ease-in-out"
+          [ngClass]="{
+            'text-primary-600 dark:text-primary-300 border-t border-l border-r border-b-2 border-primary-600': activeTab === 'roles',
+            'text-gray-600 dark:text-gray-400 hover:border-t hover:border-l hover:border-r hover:border-gray-400': activeTab !== 'roles'
+          }"
+          (click)="activeTab = 'roles'"
+        >
+          <span class="flex items-center space-x-2">
+            <i data-feather="check-circle"></i>
+            <span>{{ 'UserRoles' | localize }}</span>
+          </span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="px-6 mt-4">
+      @if (activeTab === 'details') {
+        <!-- Name -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4 relative">
+          <label
+            for="name"
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'Name' | localize }}
+          </label>
+          <div class="col-span-2 relative">
+            <input
+              type="text"
+              name="name"
+              id="name"
+              required
+              maxlength="64"
+              [(ngModel)]="user.name"
+              #nameModel="ngModel"
+              #nameEl
+              class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                     bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                     focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                     text-sm"
+            />
+            <abp-validation-summary
+              class="text-red-500 mt-1 text-sm"
+              [control]="nameModel"
+              [controlEl]="nameEl"
+            ></abp-validation-summary>
+          </div>
+        </div>
+
+        <!-- Surname -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4 relative">
+          <label
+            for="surname"
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'Surname' | localize }}
+          </label>
+          <div class="col-span-2 relative">
+            <input
+              type="text"
+              name="surname"
+              id="surname"
+              required
+              maxlength="64"
+              [(ngModel)]="user.surname"
+              #surnameModel="ngModel"
+              #surnameEl
+              class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                     bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                     focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                     text-sm"
+            />
+            <abp-validation-summary
+              class="text-red-500 mt-1 text-sm"
+              [control]="surnameModel"
+              [controlEl]="surnameEl"
+            ></abp-validation-summary>
+          </div>
+        </div>
+
+        <!-- UserName -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4 relative">
+          <label
+            for="userName"
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'UserName' | localize }}
+          </label>
+          <div class="col-span-2 relative">
+            <input
+              type="text"
+              name="userName"
+              id="userName"
+              required
+              minlength="2"
+              maxlength="256"
+              [(ngModel)]="user.userName"
+              #userNameModel="ngModel"
+              #userNameEl
+              class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                     bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                     focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                     text-sm"
+            />
+            <abp-validation-summary
+              class="text-red-500 mt-1 text-sm"
+              [control]="userNameModel"
+              [controlEl]="userNameEl"
+            ></abp-validation-summary>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4 relative">
+          <label
+            for="password"
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'Password' | localize }}
+          </label>
+          <div class="col-span-2 relative">
+            <input
+              type="password"
+              name="password"
+              id="password"
+              required
+              maxlength="32"
+              validateEqual="confirmPassword"
+              reverse="true"
+              pattern="(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)[0-9a-zA-Z!@#$%^&*()]*$"
+              [(ngModel)]="user.password"
+              #passwordModel="ngModel"
+              #passwordEl
+              class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                     bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                     focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                     text-sm"
+            />
+            <abp-validation-summary
+              class="text-red-500 mt-1 text-sm"
+              [control]="passwordModel"
+              [controlEl]="passwordEl"
+              [customValidationErrors]="passwordValidationErrors"
+            ></abp-validation-summary>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4 relative">
+          <label
+            for="confirmPassword"
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'ConfirmPassword' | localize }}
+          </label>
+          <div class="col-span-2 relative">
+            <input
+              type="password"
+              name="confirmPassword"
+              id="confirmPassword"
+              required
+              maxlength="32"
+              validateEqual="password"
+              reverse="false"
+              ngModel
+              #confirmPasswordModel="ngModel"
+              #confirmPasswordEl
+              class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                     bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                     focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                     text-sm"
+            />
+            <abp-validation-summary
+              class="text-red-500 mt-1 text-sm"
+              [control]="confirmPasswordModel"
+              [controlEl]="confirmPasswordEl"
+              [customValidationErrors]="confirmPasswordValidationErrors"
+            ></abp-validation-summary>
+          </div>
+        </div>
+
+        <!-- Email Address -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4 relative">
+          <label
+            for="emailAddress"
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'EmailAddress' | localize }}
+          </label>
+          <div class="col-span-2 relative">
+            <input
+              type="email"
+              name="emailAddress"
+              id="emailAddress"
+              required
+              maxlength="256"
+              pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{1,})+$"
+              [(ngModel)]="user.emailAddress"
+              #emailAddressModel="ngModel"
+              #emailAddressEl
+              class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                     bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                     focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                     text-sm"
+            />
+            <abp-validation-summary
+              class="text-red-500 mt-1 text-sm"
+              [control]="emailAddressModel"
+              [controlEl]="emailAddressEl"
+            ></abp-validation-summary>
+          </div>
+        </div>
+
+        <!-- Is Active -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+          >
+            {{ 'IsActive' | localize }}
+          </label>
+          <div class="col-span-2">
+            <label class="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                class="h-4 w-4 rounded border border-gray-300 text-primary-600 focus:ring-primary-500"
+                name="isActive"
+                id="isActive"
+                [(ngModel)]="user.isActive"
+              />
+              <span class="text-md text-theme-bodycolor dark:text-themedark-bodycolor"></span>
+            </label>
+          </div>
+        </div>
+      }
+
+      @if (activeTab === 'roles') {
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          @for (role of roles; track role; let i = $index) {
+            <label
+              class="flex items-center space-x-2 text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+            >
+              <input
+                type="checkbox"
+                class="h-4 w-4 rounded border border-gray-300 text-primary-600 focus:ring-primary-500"
+                [id]="'role_' + i"
+                [checked]="isRoleChecked(role.normalizedName)"
+                (change)="onRoleChange(role, $event)"
+              />
+              <span>{{ role.name }}</span>
+            </label>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Modal Footer -->
+    <abp-modal-footer
+      [cancelDisabled]="saving"
+      [saveDisabled]="!createUserModal.form.valid || saving"
+      (onCancelClick)="bsModalRef.hide()"
+    ></abp-modal-footer>
+  </form>
+</div>

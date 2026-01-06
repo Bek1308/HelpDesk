@@ -1,0 +1,27 @@
+﻿<div class="relative flex flex-wrap justify-center w-full py-2 bg-transparent transition-colors duration-300">
+  <div class="flex flex-wrap justify-center gap-6">
+    @for (language of languages; track language) {
+      @if (language.name != currentLanguage.name) {
+        <a
+          href="javascript:void(0);"
+          (click)="changeLanguage(language.name)"
+          class="flex items-center justify-center text-theme-secondarytextcolor dark:text-themedark-secondarytextcolor hover:text-primary-500 dark:hover:text-primary-500  hover:scale-125 transition-transform duration-200"
+          title="{{ language.displayName }}"
+        >
+          <span class="inline-flex items-center">
+             @if (language.name === 'en') {
+                <img class="w-5 h-5 mr-4" src="assets/flags/us.svg" >
+              }
+              @else if (language.name === 'ru') {
+                <img class="w-5 h-5 mr-4 " src="assets/flags/ru.svg">
+              }
+              @else if (language.name === 'tg') {
+                <img class="w-5 h-5 mr-4 " src="assets/flags/tg.svg">
+              }
+              {{ language.displayName }}
+          </span>
+        </a>
+      }
+    }
+  </div>
+</div>

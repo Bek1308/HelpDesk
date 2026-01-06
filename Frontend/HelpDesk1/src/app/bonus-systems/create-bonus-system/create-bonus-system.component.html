@@ -1,0 +1,602 @@
+<!-- Overlay -->
+<div class="fixed inset-0 bg-black/40 z-[900]" (click)="bsModalRef.hide()"></div>
+
+<!-- Modal -->
+<div class="fixed inset-0 z-[1000] flex justify-center items-start pt-2 pointer-events-none">
+  <form class="relative w-full max-w-5xl bg-theme-cardbg dark:bg-themedark-cardbg rounded-xl shadow-2xl pt-4 pointer-events-auto overflow-hidden" 
+        autocomplete="off" #createForm="ngForm" (ngSubmit)="save()">
+
+    <!-- Header -->
+    <abp-modal-header [title]="'CreateBonusSystem' | localize" (onCloseClick)="bsModalRef.hide()" class="w-full mb-4"></abp-modal-header>
+
+    <!-- Tabs -->
+    <div class="px-6 mt-2">
+      <nav class="flex space-x-1 border-b border-gray-200 dark:border-gray-700">
+        <button type="button" class="px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-all"
+          [ngClass]="activeTab === 'details' 
+            ? 'text-primary-600 dark:text-primary-300 border-b-3 border-primary-600' 
+            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'"
+          (click)="activeTab = 'details'">
+          <span class="flex items-center space-x-2">
+            <i data-feather="settings" class="w-4 h-4"></i>
+            <span>{{ 'Details' | localize }}</span>
+          </span>
+        </button>
+        <button type="button" class="px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-all"
+          [ngClass]="activeTab === 'rules' 
+            ? 'text-primary-600 dark:text-primary-300 border-b-3 border-primary-600' 
+            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'"
+          (click)="activeTab = 'rules'">
+          <span class="flex items-center space-x-2">
+            <i data-feather="code" class="w-4 h-4"></i>
+            <span>{{ 'ActionRules' | localize }}</span>
+          </span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Content -->
+    <div class="px-6 mt-6 max-h-[62vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500">
+
+      <!-- DETAILS TAB -->
+      @if (activeTab === 'details') {
+        <!-- Name -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ 'Name' | localize }} <span class="text-danger">*</span>
+          </label>
+          <div class="col-span-2 relative">
+            <input type="text" name="name" required [(ngModel)]="form.name" #nameModel="ngModel" #nameEl
+              class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm" />
+            <abp-validation-summary class="text-red-500 mt-1 text-sm" [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
+          </div>
+        </div>
+
+        <!-- Amount -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ 'Amount' | localize }} <span class="text-danger">*</span>
+          </label>
+          <div class="col-span-2 relative">
+            <input type="number" name="amount" min="1" required [(ngModel)]="form.amount" #amountModel="ngModel" #amountEl
+              class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm" />
+            <abp-validation-summary class="text-red-500 mt-1 text-sm" [control]="amountModel" [controlEl]="amountEl"></abp-validation-summary>
+          </div>
+        </div>
+
+        <!-- Period Type -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ 'PeriodType' | localize }} <span class="text-danger">*</span>
+          </label>
+          <div class="col-span-2 relative dropdown" (click)="$event.stopPropagation()">
+            <div class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm flex justify-between items-center cursor-pointer"
+              (click)="toggleDropdown('periodType')">
+              <span>{{ getPeriodTypeName(form.periodTypeId) }}</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+            <input type="hidden" name="periodTypeId" [(ngModel)]="form.periodTypeId" required #periodTypeModel="ngModel" />
+            <abp-validation-summary class="text-red-500 mt-1 text-sm" [control]="periodTypeModel"></abp-validation-summary>
+            @if (dropdowns['periodType']) {
+              <div class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]" (click)="stopPropagation($event)">
+                <input type="text" [(ngModel)]="search['periodType']" (click)="stopPropagation($event)" placeholder="{{ 'Search' | localize }}"
+                  class="w-full px-3 py-2 border-b text-sm text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg border-theme-inputborder dark:border-themedark-inputborder focus:outline-none" />
+                @for (t of periodTypes; track t.id) {
+                  <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                    (click)="form.periodTypeId = t.id; closeDropdown('periodType')">
+                    {{ t.name }}
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Budget Type -->
+        <div class="grid grid-cols-3 items-center gap-4 mb-4">
+          <label class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ 'BudgetType' | localize }} <span class="text-danger">*</span>
+          </label>
+          <div class="col-span-2 relative dropdown" (click)="$event.stopPropagation()">
+            <div class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm flex justify-between items-center cursor-pointer"
+              (click)="toggleDropdown('budgetType')">
+              <span>{{ getBudgetTypeName(form.budgetTypeId) }}</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+            <input type="hidden" name="budgetTypeId" [(ngModel)]="form.budgetTypeId" required #budgetTypeModel="ngModel" />
+            <abp-validation-summary class="text-red-500 mt-1 text-sm" [control]="budgetTypeModel"></abp-validation-summary>
+            @if (dropdowns['budgetType']) {
+              <div class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]" (click)="stopPropagation($event)">
+                @for (t of budgetTypes; track t.id) {
+                  <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                    (click)="form.budgetTypeId = t.id; closeDropdown('budgetType')">
+                    {{ t.name }}
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        @if (form.periodTypeId === 2) {
+          <div class="grid grid-cols-3 items-center gap-4 mb-4">
+            <label class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor">
+              {{ 'StartWeekday' | localize }}
+            </label>
+            <div class="col-span-2 relative dropdown" (click)="$event.stopPropagation()">
+              <div class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm flex justify-between items-center cursor-pointer"
+                (click)="toggleDropdown('weekday')">
+                <span>{{ getWeekdayName(form.periodStartWeekdayId) }}</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
+              <input type="hidden" name="periodStartWeekdayId" [(ngModel)]="form.periodStartWeekdayId" />
+              @if (dropdowns['weekday']) {
+                <div class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]" (click)="stopPropagation($event)">
+                  @for (d of weekdays; track d.id) {
+                    <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                      (click)="form.periodStartWeekdayId = d.id; closeDropdown('weekday')">
+                      {{ d.name }}
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        @if (form.periodTypeId === 3) {
+          <div class="grid grid-cols-3 items-center gap-4 mb-4">
+            <label class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor">
+              {{ 'StartDayOfMonth' | localize }}
+            </label>
+            <div class="col-span-2 relative">
+              <input type="number" name="periodStartDay" min="1" max="31" [(ngModel)]="form.periodStartDay"
+                class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm" />
+            </div>
+          </div>
+        }
+
+        <!-- Description -->
+        <div class="grid grid-cols-3 items-start gap-4 mb-4">
+          <label class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ 'Description' | localize }} <span class="text-danger">*</span>
+          </label>
+          <div class="col-span-2 relative">
+            <textarea name="description" required [(ngModel)]="form.description" #descModel="ngModel" #descEl rows="3"
+              class="w-full px-3 py-2 rounded-md border border-theme-inputborder dark:border-themedark-inputborder bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor focus:outline-none focus:ring-1 focus:ring-primary-500 transition text-sm"></textarea>
+            <abp-validation-summary class="text-red-500 mt-1 text-sm" [control]="descModel" [controlEl]="descEl"></abp-validation-summary>
+          </div>
+        </div>
+
+        <!-- Active -->
+        <div class="grid grid-cols-3 items-center gap-4">
+          <label class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor">
+            {{ 'Active' | localize }}
+          </label>
+          <div class="col-span-2">
+            <div class="flex items-center space-x-2">
+              <input type="checkbox" name="isActive" [(ngModel)]="form.isActive" class="h-4 w-4 rounded border border-gray-300 text-primary-600 focus:ring-primary-500" />
+              <span class="text-sm">{{ form.isActive ? ('Yes' | localize) : ('No' | localize) }}</span>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- RULES TAB -->
+      @if (activeTab === 'rules') {
+        <div class="space-y-6">
+
+          <!-- Add Rule -->
+          <div class="flex justify-end">
+            <button type="button" (click)="addActionRule()"
+              class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition-all duration-200 shadow-sm">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+              {{ 'AddRule' | localize }}
+            </button>
+          </div>
+
+          <!-- Rule List -->
+          <div cdkDropList (cdkDropListDropped)="dropRule($event)" class="space-y-6">
+            @for (rule of form.actionRules; track rule.id; let i = $index) {
+              <div cdkDrag [cdkDragData]="rule"
+                class="border border-theme-inputborder dark:border-themedark-inputborder rounded-xl p-6 bg-theme-cardbg dark:bg-themedark-cardbg shadow-md hover:shadow-lg transition-all duration-200">
+
+                <!-- Drag & Delete -->
+                <div class="flex justify-between items-start mb-4">
+                  <div cdkDragHandle class="cursor-move text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                  </div>
+                  <button type="button" (click)="removeActionRule(i)" class="text-red-500 hover:text-red-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Action Name & Points -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                  <div>
+                    <label class="block text-sm font-medium mb-1.5 text-theme-bodycolor dark:text-themedark-bodycolor">{{ 'ActionName' | localize }} *</label>
+                    <input [(ngModel)]="rule.actionName" [name]="'actionName_' + i" required
+                      class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm" />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium mb-1.5 text-theme-bodycolor dark:text-themedark-bodycolor">{{ 'Points' | localize }} *</label>
+                    <input [(ngModel)]="rule.points" [name]="'points_' + i" type="number" min="1" required
+                      class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm" />
+                  </div>
+                </div>
+
+                <!-- ROOT GROUP -->
+                <div class="condition-group p-5 border-2 rounded-xl space-y-4 transition-all"
+                     [class.bg-green-50]="rule.rootGroup.logic === 'AND'"
+                     [class.bg-blue-50]="rule.rootGroup.logic === 'OR'"
+                     [class.border-green-500]="rule.rootGroup.logic === 'AND'"
+                     [class.border-blue-500]="rule.rootGroup.logic === 'OR'"
+                     [class.dark:bg-green-900]="rule.rootGroup.logic === 'AND'"
+                     [class.dark:bg-blue-900]="rule.rootGroup.logic === 'OR'"
+                     [class.dark:bg-opacity-15]="rule.rootGroup.logic === 'AND' || rule.rootGroup.logic === 'OR'">
+
+                  <!-- Header -->
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <span class="text-xs font-bold text-theme-bodycolor dark:text-themedark-bodycolor">{{ 'Logic' | localize }}:</span>
+                      <button (click)="toggleGroupLogic(i, null)"
+                        class="px-3 py-1 text-xs font-bold rounded-full text-white transition-all"
+                        [class.bg-green-600]="rule.rootGroup.logic === 'AND'"
+                        [class.bg-blue-600]="rule.rootGroup.logic === 'OR'">
+                        {{ rule.rootGroup.logic }}
+                      </button>
+                    </div>
+                    <div class="flex gap-2 text-xs">
+                      <button (click)="addConditionToGroup(i, null)" class="text-primary-600 hover:underline">
+                        + {{ 'Condition' | localize }}
+                      </button>
+                      <button (click)="addSubGroupToGroup(i, null)" class="text-primary-600 hover:underline">
+                        + {{ 'Group' | localize }}
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Items -->
+                  <div cdkDropList [cdkDropListData]="rule.rootGroup.items" (cdkDropListDropped)="dropItemInGroup(i, null, $event)" class="space-y-3">
+                    @for (item of rule.rootGroup.items; track item.id; let j = $index) {
+                      <div cdkDrag [cdkDragData]="item" class="flex items-center gap-3 flex-wrap">
+
+                        <!-- FIRST ACTION -->
+                        @if (j === 0 && item.type === 'condition' && item.condition.action) {
+                          <div class="flex-1 p-3 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 border-2 border-green-300 dark:border-green-700 rounded-xl shadow-sm">
+                            <label class="block text-sm font-semibold text-green-800 dark:text-green-200 mb-2">{{ 'Action' | localize }}</label>
+                            <div class="relative dropdown" (click)="$event.stopPropagation()">
+                              <div class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm flex justify-between items-center cursor-pointer"
+                                (click)="toggleDropdown('action_' + i)">
+                                <span>{{ getActionName(item.condition.action) || ('SelectAction' | localize) }}</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                              </div>
+                              @if (dropdowns['action_' + i]) {
+                                <div class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg max-h-[40vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]" (click)="stopPropagation($event)">
+                                  <input type="text" [(ngModel)]="search['action_' + i]" (click)="stopPropagation($event)" placeholder="{{ 'Search' | localize }}"
+                                    class="w-full px-3 py-2 border-b text-sm text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg border-theme-inputborder dark:border-themedark-inputborder focus:outline-none" />
+                                  @for (a of getFilteredActions(i); track a.id) {
+                                    <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                                      (click)="item.condition.action = a.id; closeDropdown('action_' + i)">
+                                      {{ a.name }}
+                                    </div>
+                                  }
+                                </div>
+                              }
+                            </div>
+                          </div>
+                        }
+
+                        <!-- CONDITION (j > 0) -->
+                        @if (item.type === 'condition' && j > 0) {
+                          <div class="flex-1 p-3 bg-white dark:bg-gray-800 rounded-lg border flex flex-wrap gap-2 items-center min-w-0">
+                            <!-- Field -->
+                            <div class="flex-1 min-w-[120px]">
+                              <div class="relative dropdown" (click)="$event.stopPropagation()">
+                                <div class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm flex justify-between items-center cursor-pointer truncate"
+                                  (click)="toggleDropdown('field_' + i + '_root_' + j)">
+                                  <span class="truncate">{{ getFieldDisplayName(item.condition.field) || ('SelectField' | localize) }}</span>
+                                  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                                @if (dropdowns['field_' + i + '_root_' + j]) {
+                                  <div class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg max-h-[40vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]" (click)="stopPropagation($event)">
+                                    <input type="text" [(ngModel)]="search['field_' + i + '_root_' + j]" (click)="stopPropagation($event)" placeholder="{{ 'Search' | localize }}"
+                                      class="w-full px-3 py-2 border-b text-sm text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg border-theme-inputborder dark:border-themedark-inputborder focus:outline-none" />
+                                    @for (f of getFilteredAllFields(i, null, j); track f.id) {
+                                      <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                                        (click)="item.condition.field = f.id; item.condition.value = ''; closeDropdown('field_' + i + '_root_' + j)">
+                                        {{ f.display }}
+                                      </div>
+                                    }
+                                  </div>
+                                }
+                              </div>
+                            </div>
+
+                            <!-- Operator -->
+                            <div class="flex-1 min-w-[80px]">
+                              <div class="relative dropdown" (click)="$event.stopPropagation()">
+                                <div class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm flex justify-between items-center cursor-pointer truncate"
+                                  (click)="toggleDropdown('op_' + i + '_root_' + j)">
+                                  <span class="truncate">{{ getOperatorName(item.condition.operator) || ('SelectOperator' | localize) }}</span>
+                                  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                                @if (dropdowns['op_' + i + '_root_' + j]) {
+                                  <div class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg max-h-[40vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]" (click)="stopPropagation($event)">
+                                    <input type="text" [(ngModel)]="search['op_' + i + '_root_' + j]" (click)="stopPropagation($event)" placeholder="{{ 'Search' | localize }}"
+                                      class="w-full px-3 py-2 border-b text-sm text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg border-theme-inputborder dark:border-themedark-inputborder focus:outline-none" />
+                                    @for (op of getFilteredOperators(i, null, j); track op.id) {
+                                      <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                                        (click)="item.condition.operator = op.id; closeDropdown('op_' + i + '_root_' + j)">
+                                        {{ op.name }}
+                                      </div>
+                                    }
+                                  </div>
+                                }
+                              </div>
+                            </div>
+
+                            <!-- Value -->
+                            <div class="flex-1 min-w-[120px]">
+                              @if (isFieldDropdown(item.condition.field)) {
+                                <div class="relative dropdown" (click)="$event.stopPropagation()">
+                                  <div class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm flex justify-between items-center cursor-pointer truncate"
+                                    (click)="toggleDropdown('val_' + i + '_root_' + j)">
+                                    <span class="truncate">{{ getValueDisplay(item.condition.field, item.condition.value) || ('SelectValue' | localize) }}</span>
+                                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                  </div>
+                                  @if (dropdowns['val_' + i + '_root_' + j]) {
+                                    <div class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg max-h-[40vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]" (click)="stopPropagation($event)">
+                                      <input type="text" [(ngModel)]="search['val_' + i + '_root_' + j]" (click)="stopPropagation($event)" placeholder="{{ 'Search' | localize }}"
+                                        class="w-full px-3 py-2 border-b text-sm text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg border-theme-inputborder dark:border-themedark-inputborder focus:outline-none" />
+                                      @if (isUserField(item.condition.field)) {
+                                        <div class="px-3 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 cursor-pointer"
+                                          (click)="item.condition.value = 'self'; closeDropdown('val_' + i + '_root_' + j)">
+                                          O'zi
+                                        </div>
+                                      }
+                                      @for (opt of getFilteredValueOptions(item.condition.field, i, null, j); track opt.id) {
+                                        <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                                          (click)="item.condition.value = opt.id; closeDropdown('val_' + i + '_root_' + j)">
+                                          {{ opt.display }}
+                                        </div>
+                                      }
+                                    </div>
+                                  }
+                                </div>
+                              } @else {
+                                <input [(ngModel)]="item.condition.value" 
+                                       [name]="'val_' + i + '_root_' + j" 
+                                       type="text" required
+                                       class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm" 
+                                       placeholder="qiymat" />
+                              }
+                            </div>
+                          </div>
+                        }
+
+                        <!-- SUBGROUP -->
+                        @if (item.type === 'group') {
+                          <div class="flex-1 w-full ml-6 p-4 border-l-4 border-dashed border-gray-400">
+                            <div class="condition-group p-5 border-2 rounded-xl space-y-4 transition-all"
+                                 [class.bg-green-50]="item.group.logic === 'AND'"
+                                 [class.bg-blue-50]="item.group.logic === 'OR'"
+                                 [class.border-green-500]="item.group.logic === 'AND'"
+                                 [class.border-blue-500]="item.group.logic === 'OR'"
+                                 [class.dark:bg-green-900]="item.group.logic === 'AND'"
+                                 [class.dark:bg-blue-900]="item.group.logic === 'OR'"
+                                 [class.dark:bg-opacity-15]="item.group.logic === 'AND' || item.group.logic === 'OR'">
+
+                              <!-- Subgroup Header -->
+                              <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                  <span class="text-xs font-bold text-theme-bodycolor dark:text-themedark-bodycolor">{{ 'Logic' | localize }}:</span>
+                                  <button (click)="toggleGroupLogic(i, j + '')"
+                                    class="px-3 py-1 text-xs font-bold rounded-full text-white transition-all"
+                                    [class.bg-green-600]="item.group.logic === 'AND'"
+                                    [class.bg-blue-600]="item.group.logic === 'OR'">
+                                    {{ item.group.logic }}
+                                  </button>
+                                </div>
+                                <div class="flex gap-2 text-xs">
+                                  <button (click)="addConditionToGroup(i, j + '')" class="text-primary-600 hover:underline">
+                                    + {{ 'Condition' | localize }}
+                                  </button>
+                                  <button (click)="addSubGroupToGroup(i, j + '')" class="text-primary-600 hover:underline">
+                                    + {{ 'Group' | localize }}
+                                  </button>
+                                </div>
+                              </div>
+
+                              <!-- Subgroup Items -->
+                              <div cdkDropList [cdkDropListData]="item.group.items" (cdkDropListDropped)="dropItemInGroup(i, j + '', $event)" class="space-y-3">
+                                @for (subItem of item.group.items; track subItem.id; let k = $index) {
+                                  <div cdkDrag [cdkDragData]="subItem" class="flex items-center gap-3 flex-wrap">
+
+                                    <!-- SUB-CONDITION -->
+                                    @if (subItem.type === 'condition') {
+                                      <div class="flex-1 p-3 bg-white dark:bg-gray-800 rounded-lg border flex flex-wrap gap-2 items-center min-w-0">
+                                        <!-- Field -->
+                                        <div class="flex-1 min-w-[120px]">
+                                          <div class="relative dropdown" (click)="$event.stopPropagation()">
+                                            <div class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm flex justify-between items-center cursor-pointer truncate"
+                                              (click)="toggleDropdown('field_' + i + '_' + j + '_' + k)">
+                                              <span class="truncate">{{ getFieldDisplayName(subItem.condition.field) || ('SelectField' | localize) }}</span>
+                                              <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                            </div>
+                                            @if (dropdowns['field_' + i + '_' + j + '_' + k]) {
+                                              <div class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg max-h-[40vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]" (click)="stopPropagation($event)">
+                                                <input type="text" [(ngModel)]="search['field_' + i + '_' + j + '_' + k]" (click)="stopPropagation($event)" placeholder="{{ 'Search' | localize }}"
+                                                  class="w-full px-3 py-2 border-b text-sm text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg border-theme-inputborder dark:border-themedark-inputborder focus:outline-none" />
+                                                @for (f of getFilteredAllFields(i, j + '', k); track f.id) {
+                                                  <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                                                    (click)="subItem.condition.field = f.id; subItem.condition.value = ''; closeDropdown('field_' + i + '_' + j + '_' + k)">
+                                                    {{ f.display }}
+                                                  </div>
+                                                }
+                                              </div>
+                                            }
+                                          </div>
+                                        </div>
+
+                                        <!-- Operator -->
+                                        <div class="flex-1 min-w-[80px]">
+                                          <div class="relative dropdown" (click)="$event.stopPropagation()">
+                                            <div class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm flex justify-between items-center cursor-pointer truncate"
+                                              (click)="toggleDropdown('op_' + i + '_' + j + '_' + k)">
+                                              <span class="truncate">{{ getOperatorName(subItem.condition.operator) || ('SelectOperator' | localize) }}</span>
+                                              <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                            </div>
+                                            @if (dropdowns['op_' + i + '_' + j + '_' + k]) {
+                                              <div class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg max-h-[40vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]" (click)="stopPropagation($event)">
+                                                <input type="text" [(ngModel)]="search['op_' + i + '_' + j + '_' + k]" (click)="stopPropagation($event)" placeholder="{{ 'Search' | localize }}"
+                                                  class="w-full px-3 py-2 border-b text-sm text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg border-theme-inputborder dark:border-themedark-inputborder focus:outline-none" />
+                                                @for (op of getFilteredOperators(i, j + '', k); track op.id) {
+                                                  <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                                                    (click)="subItem.condition.operator = op.id; closeDropdown('op_' + i + '_' + j + '_' + k)">
+                                                    {{ op.name }}
+                                                  </div>
+                                                }
+                                              </div>
+                                            }
+                                          </div>
+                                        </div>
+
+                                        <!-- Value -->
+                                        <div class="flex-1 min-w-[120px]">
+                                          @if (isFieldDropdown(subItem.condition.field)) {
+                                            <div class="relative dropdown" (click)="$event.stopPropagation()">
+                                              <div class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm flex justify-between items-center cursor-pointer truncate"
+                                                (click)="toggleDropdown('val_' + i + '_' + j + '_' + k)">
+                                                <span class="truncate">{{ getValueDisplay(subItem.condition.field, subItem.condition.value) || ('SelectValue' | localize) }}</span>
+                                                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                              </div>
+                                              @if (dropdowns['val_' + i + '_' + j + '_' + k]) {
+                                                <div class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg max-h-[40vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]" (click)="stopPropagation($event)">
+                                                  <input type="text" [(ngModel)]="search['val_' + i + '_' + j + '_' + k]" (click)="stopPropagation($event)" placeholder="{{ 'Search' | localize }}"
+                                                    class="w-full px-3 py-2 border-b text-sm text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg border-theme-inputborder dark:border-themedark-inputborder focus:outline-none" />
+                                                  @if (isUserField(subItem.condition.field)) {
+                                                    <div class="px-3 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 cursor-pointer"
+                                                      (click)="subItem.condition.value = 'self'; closeDropdown('val_' + i + '_' + j + '_' + k)">
+                                                      O'zi
+                                                    </div>
+                                                  }
+                                                  @for (opt of getFilteredValueOptions(subItem.condition.field, i, j + '', k); track opt.id) {
+                                                    <div class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+                                                      (click)="subItem.condition.value = opt.id; closeDropdown('val_' + i + '_' + j + '_' + k)">
+                                                      {{ opt.display }}
+                                                    </div>
+                                                  }
+                                                </div>
+                                              }
+                                            </div>
+                                          } @else {
+                                            <input [(ngModel)]="subItem.condition.value" 
+                                                   [name]="'val_' + i + '_' + j + '_' + k" 
+                                                   type="text" required
+                                                   class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1 focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder text-sm" 
+                                                   placeholder="qiymat" />
+                                          }
+                                        </div>
+                                      </div>
+                                    }
+
+                                    <!-- SUB-SUBGROUP (cheksiz davom etadi) -->
+                                    @if (subItem.type === 'group') {
+                                      <!-- Bu yerda yana shu struktura takrorlanadi -->
+                                      <!-- 3-4 daraja ko'rsatish mumkin, lekin TS `getGroup` funksiyasi cheksiz ishlaydi -->
+                                    }
+
+                                    <!-- AND/OR -->
+                                    @if (k < item.group.items.length - 1) {
+                                      <div class="flex items-center">
+                                        <button (click)="toggleItemLogic(i, j + '', k)" 
+                                                class="px-3 py-1 text-xs font-bold rounded-full text-white transition-all"
+                                                [class.bg-green-600]="getItemLogic(i, j + '', k) === 'AND'"
+                                                [class.bg-blue-600]="getItemLogic(i, j + '', k) === 'OR'">
+                                          {{ getItemLogic(i, j + '', k) }}
+                                        </button>
+                                      </div>
+                                    }
+
+                                    <!-- DELETE -->
+                                    <button (click)="removeItemFromGroup(i, j + '', k)" class="text-red-500 hover:text-red-700">
+                                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                      </svg>
+                                    </button>
+                                  </div>
+                                }
+                              </div>
+                            </div>
+                          </div>
+                        }
+
+                        <!-- AND/OR (root) -->
+                        @if (j < rule.rootGroup.items.length - 1) {
+                          <div class="flex items-center">
+                            <button (click)="toggleItemLogic(i, null, j)" 
+                                    class="px-3 py-1 text-xs font-bold rounded-full text-white transition-all"
+                                    [class.bg-green-600]="getItemLogic(i, null, j) === 'AND'"
+                                    [class.bg-blue-600]="getItemLogic(i, null, j) === 'OR'">
+                              {{ getItemLogic(i, null, j) }}
+                            </button>
+                          </div>
+                        }
+
+                        <!-- DELETE (first action o'chirilmaydi) -->
+                        @if (j !== 0) {
+                          <button (click)="removeItemFromGroup(i, null, j)" class="text-red-500 hover:text-red-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                          </button>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- Preview -->
+                <div class="mt-5 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <p class="text-sm font-medium text-blue-900 dark:text-blue-100">{{ 'Preview' | localize }}:</p>
+                  <p class="text-xs text-blue-700 dark:text-blue-200 mt-1 font-mono break-all" [innerHTML]="getRuleSummary(rule)"></p>
+                  <p class="text-sm font-bold text-primary-600 dark:text-primary-400 mt-2">
+                    → {{ rule.points }} ball
+                  </p>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Empty State -->
+          @if (form.actionRules.length === 0) {
+            <div class="text-center py-16 text-gray-500">
+              <svg class="w-20 h-20 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              <p class="text-lg font-medium">{{ 'NoRulesYet' | localize }}</p>
+              <button type="button" (click)="addActionRule()" class="mt-4 text-primary-600 hover:underline text-sm">
+                + {{ 'AddFirstRule' | localize }}
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Footer -->
+    <abp-modal-footer 
+      [cancelDisabled]="saving" 
+      [saveDisabled]="!createForm.form.valid || saving || form.actionRules.length === 0"
+      (onCancelClick)="bsModalRef.hide()" 
+      (onSaveClick)="save()">
+    </abp-modal-footer>
+  </form>
+</div>

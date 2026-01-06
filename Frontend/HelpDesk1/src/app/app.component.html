@@ -1,0 +1,36 @@
+<div class="flex h-screen overflow-x-hidden">
+  <app-sidebar></app-sidebar>
+
+  <div class="flex-1 flex flex-col min-w-0 transition-all duration-100 ease-in-out"
+       [ngClass]="{'lg:ml-64': sidebarExpanded, 'lg:ml-0': !sidebarExpanded}">
+
+    <app-header 
+      [ngClass]="!isMobile 
+        ? 'fixed top-0 z-30 w-full transition-all duration-200 ' + 
+          (sidebarExpanded ? 'lg:left-64 lg:w-[calc(100%-16rem)]' : 'left-0 w-full') 
+        : 'w-full fixed'"
+    >
+    </app-header>
+
+    <!-- Main wrapper -->
+    <main class="flex-1 flex flex-col min-h-0 overflow-x-hidden">
+
+      <!-- Scrollable kontent + footer -->
+      <div class="flex-1 flex flex-col overflow-y-auto px-4 py-4 
+                  scrollbar-thin scrollbar-thumb-primary-500 
+                  scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg pt-16">
+
+        <!-- Kontent -->
+        <div class="flex-1 w-full max-w-full break-words">
+          <router-outlet></router-outlet>
+        </div>
+
+        <!-- Footer pastda, hech qanday bo‘shliq yo‘q -->
+        <app-footer class="mt-auto"></app-footer>
+
+      </div>
+
+    </main>
+
+  </div>
+</div>

@@ -1,0 +1,134 @@
+<div class="navbar-content relative py-2.5 px-0 h-[calc(100vh-56px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 mx-1">
+  <ul class="pc-navbar">
+    @for (item of menuItems; track item.id) {
+      @if (isMenuItemVisible(item)) {
+        @if (item.children && !sidebarCaptionHidden) {
+          <li class="pc-caption block px-[23px] pt-6 first:pt-2.5 pb-2 uppercase text-[11px] font-semibold text-theme-sidebarcaption dark:text-themedark-sidebarcaption">
+            {{ item.name }}
+          </li>
+        }
+        @for (subItem of item.children; track subItem.id) {
+          @if (isMenuItemVisible(subItem)) {
+            <li class="pc-item relative before:content-[''] before:absolute before:inset-y-0 before:w-[3px]"
+                [ngClass]="{'before:bg-primary-500 bg-[rgba(0,0,0,0.1)]': isActive(subItem) || subItem.isOpen}">
+              <a class="pc-link flex items-center px-5 py-2.5 relative text-base text-theme-sidebarcolor dark:text-themedark-sidebarcolor after:content-[''] after:absolute after:inset-0 after:opacity-10 hover:after:bg-dark-500"
+                 [ngClass]="{'text-white after:bg-dark-500 font-medium active': isActive(subItem)}"
+                 [routerLink]="subItem.link && subItem.link.indexOf('http') !== 0 ? subItem.link : null"
+                 [href]="subItem.link && subItem.link.indexOf('http') === 0 ? subItem.link : null"
+                 routerLinkActive="active"
+                 [routerLinkActiveOptions]="{ exact: true }"
+                 (click)="toggleSubmenu(subItem, item, 'first')">
+                @if (subItem.icon) {
+                  <i class="pc-micon inline-block align-middle w-6 h-6 text-[16px] text-center mr-[15px]" [attr.data-feather]="subItem.icon"></i>
+                }
+                <span [ngClass]="{'hidden': !sidebarExpanded}">{{ subItem.name }}</span>
+                @if (subItem.children) {
+                  <span class="pc-arrow inline-flex items-center ml-auto transition-all">
+                    @if (subItem.isOpen) {
+                      <svg class="w-[14px] h-[14px] text-theme-sidebarcolor dark:text-themedark-sidebarcolor transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                      </svg>
+                    } @else {
+                      <svg class="w-[14px] h-[14px] text-theme-sidebarcolor dark:text-themedark-sidebarcolor transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                      </svg>
+                    }
+                  </span>
+                }
+              </a>
+              @if (subItem.children) {
+                <ul class="pc-submenu" [ngClass]="{'hidden': !subItem.isOpen}">
+                  @for (subSubItem of subItem.children; track subSubItem.id) {
+                    @if (isMenuItemVisible(subSubItem)) {
+                      <li class="pc-item"
+                          [ngClass]="{'before:bg-primary-500 bg-[rgba(0,0,0,0.1)] active font-medium': isActive(subSubItem) || subSubItem.isOpen}">
+                        <a class="pc-link flex items-center py-3 pr-[20px] pl-[40px] relative text-sm text-theme-sidebarcolor dark:text-themedark-sidebarcolor after:content-[''] after:absolute after:rounded-full after:top-5 after:left-7 after:w-[5px] after:h-[5px] after:opacity-0 after:bg-theme-sidebarcolor hover:after:bg-primary-500 hover:after:opacity-100 hover:after:scale-[1.2]"
+                           [ngClass]="{'text-white after:bg-primary-500 after:scale-[1.2] after:opacity-100 font-medium active': isActive(subSubItem)}"
+                           [routerLink]="subSubItem.link && subSubItem.link.indexOf('http') !== 0 ? subSubItem.link : null"
+                           [href]="subSubItem.link && subSubItem.link.indexOf('http') === 0 ? subSubItem.link : null"
+                           routerLinkActive="active"
+                           [routerLinkActiveOptions]="{ exact: true }"
+                           (click)="toggleSubmenu(subSubItem, subItem, 'second')">
+                          @if (subSubItem.icon) {
+                            <i class="pc-micon inline-block align-middle w-5 h-5 text-[14px] text-center mr-[15px]" [attr.data-feather]="subSubItem.icon"></i>
+                          }
+                          <span [ngClass]="{'hidden': !sidebarExpanded}">{{ subSubItem.name }}</span>
+                          @if (subSubItem.children) {
+                            <span class="pc-arrow inline-flex items-center ml-auto transition-all">
+                              @if (subSubItem.isOpen) {
+                                <svg class="w-[12px] h-[12px] text-theme-sidebarcolor dark:text-themedark-sidebarcolor transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                              } @else {
+                                <svg class="w-[12px] h-[12px] text-theme-sidebarcolor dark:text-themedark-sidebarcolor transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                              }
+                            </span>
+                          }
+                        </a>
+                        @if (subSubItem.children) {
+                          <ul class="pc-submenu" [ngClass]="{'hidden': !subSubItem.isOpen}">
+                            @for (subSubSubItem of subSubItem.children; track subSubSubItem.id) {
+                              @if (isMenuItemVisible(subSubSubItem)) {
+                                <li class="pc-item"
+                                    [ngClass]="{'before:bg-primary-500 bg-[rgba(0,0,0,0.1)] active font-medium': isActive(subSubSubItem) || subSubSubItem.isOpen}">
+                                  <a class="pc-link flex items-center py-3 pr-[20px] pl-[95px] relative text-xs text-theme-sidebarcolor dark:text-themedark-sidebarcolor after:content-[''] after:absolute after:rounded-full after:top-5 after:left-[79px] after:w-[5px] after:h-[5px] after:opacity-0 after:bg-theme-sidebarcolor hover:after:bg-primary-500 hover:after:opacity-100 hover:after:scale-[1.2]"
+                                     [ngClass]="{'text-white after:bg-primary-500 after:scale-[1.2] after:opacity-100 font-medium active': isActive(subSubSubItem)}"
+                                     [routerLink]="subSubSubItem.link && subSubSubItem.link.indexOf('http') !== 0 ? subSubSubItem.link : null"
+                                     [href]="subSubSubItem.link && subSubSubItem.link.indexOf('http') === 0 ? subSubSubItem.link : null"
+                                     routerLinkActive="active"
+                                     [routerLinkActiveOptions]="{ exact: true }"
+                                     (click)="toggleSubmenu(subSubSubItem, subSubItem, 'third')">
+                                    <span [ngClass]="{'hidden': !sidebarExpanded}">{{ subSubSubItem.name }}</span>
+                                    @if (subSubSubItem.children) {
+                                      <span class="pc-arrow inline-flex items-center ml-auto transition-all">
+                                        @if (subSubSubItem.isOpen) {
+                                          <svg class="w-[10px] h-[10px] text-theme-sidebarcolor dark:text-themedark-sidebarcolor transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                          </svg>
+                                        } @else {
+                                          <svg class="w-[10px] h-[10px] text-theme-sidebarcolor dark:text-themedark-sidebarcolor transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                          </svg>
+                                        }
+                                      </span>
+                                    }
+                                  </a>
+                                  @if (subSubSubItem.children) {
+                                    <ul class="pc-submenu" [ngClass]="{'hidden': !subSubSubItem.isOpen}">
+                                      @for (subSubSubSubItem of subSubSubItem.children; track subSubSubSubItem.id) {
+                                        @if (isMenuItemVisible(subSubSubSubItem)) {
+                                          <li class="pc-item"
+                                              [ngClass]="{'before:bg-primary-500 bg-[rgba(0,0,0,0.1)] active font-medium': isActive(subSubSubSubItem) || subSubSubSubItem.isOpen}">
+                                            <a class="pc-link flex items-center py-3 pr-[20px] pl-[120px] relative text-[10px] text-theme-sidebarcolor dark:text-themedark-sidebarcolor after:content-[''] after:absolute after:rounded-full after:top-5 after:left-[104px] after:w-[5px] after:h-[5px] after:opacity-0 after:bg-theme-sidebarcolor hover:after:bg-primary-500 hover:after:opacity-100 hover:after:scale-[1.2]"
+                                               [ngClass]="{'text-white after:bg-primary-500 after:scale-[1.2] after:opacity-100 font-medium active': isActive(subSubSubSubItem)}"
+                                               [routerLink]="subSubSubSubItem.link && subSubSubSubItem.link.indexOf('http') !== 0 ? subSubSubSubItem.link : null"
+                                               [href]="subSubSubSubItem.link && subSubSubSubItem.link.indexOf('http') === 0 ? subSubSubSubItem.link : null"
+                                               routerLinkActive="active"
+                                               [routerLinkActiveOptions]="{ exact: true }"
+                                               (click)="toggleSubmenu(subSubSubSubItem, subSubSubItem, 'fourth')">
+                                              <span [ngClass]="{'hidden': !sidebarExpanded}">{{ subSubSubSubItem.name }}</span>
+                                            </a>
+                                          </li>
+                                        }
+                                      }
+                                    </ul>
+                                  }
+                                </li>
+                              }
+                            }
+                          </ul>
+                        }
+                      </li>
+                    }
+                  }
+                </ul>
+              }
+            </li>
+          }
+        }
+      }
+    }
+  </ul>
+</div>

@@ -1,0 +1,91 @@
+<!-- Overlay -->
+<div
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity"
+  (click)="hide()"
+></div>
+
+<!-- Modal -->
+<div
+  class="fixed inset-0 z-50 flex justify-center items-start pt-14 pointer-events-none"
+  (click)="$event.stopPropagation()"
+>
+  <form
+    class="relative w-full max-w-2xl bg-theme-cardbg dark:bg-themedark-cardbg rounded-md shadow-xl pb-6 pt-4 overflow-hidden pointer-events-auto"
+    autocomplete="off"
+    #editFaultGroupForm="ngForm"
+    (ngSubmit)="save()"
+  >
+    <!-- Modal Header -->
+    <abp-modal-header
+      [title]="'EditFaultGroup' | localize"
+      (onCloseClick)="bsModalRef.hide()"
+      class="w-full mb-4"
+    ></abp-modal-header>
+
+    <!-- Form Content -->
+    <div class="px-6 mt-4">
+      <!-- Tabs for languages -->
+      <nav class="flex space-x-1 border-b border-gray-200 dark:border-gray-700 mb-4">
+        @for (language of languages; track language.name) {
+          <button
+            type="button"
+            class="relative px-4 py-2 text-sm font-medium rounded-t-lg transition-all duration-300 ease-in-out"
+            [ngClass]="{
+              'text-primary-600 dark:text-primary-300 border-t border-l border-r border-b-2 border-primary-600': currentLanguage.name === language.name,
+              'text-gray-600 dark:text-gray-400 hover:border-t hover:border-l hover:border-r hover:border-gray-400': currentLanguage.name !== language.name
+            }"
+            (click)="currentLanguage = language"
+          >
+            <span class="flex items-center space-x-2">
+              <i [data-feather]="language.icon"></i>
+              <span>{{ language.displayName }}</span>
+            </span>
+          </button>
+        }
+      </nav>
+
+      <!-- Fault Group Title -->
+      <div class="grid grid-cols-3 items-center gap-4 mb-4 relative">
+        <label
+          for="faultGroupTitle"
+          class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'FaultGroupTitle' | localize }}
+          <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+            {{ currentLanguage.displayName }}
+          </span>
+        </label>
+        <div class="col-span-2 relative">
+          <input
+            type="text"
+            name="faultGroupTitle_{{ currentLanguage.name }}"
+            id="faultGroupTitle"
+            minlength="2"
+            maxlength="150"
+            required
+            [ngModel]="localizedTitles[currentLanguage.name]"
+            (ngModelChange)="onTitleChange($event)"
+            #faultGroupTitleModel="ngModel"
+            #faultGroupTitleEl
+            class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                   bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+                   focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+                   text-sm"
+          />
+          <abp-validation-summary
+            class="text-red-500 mt-1 text-sm"
+            [control]="faultGroupTitleModel"
+            [controlEl]="faultGroupTitleEl"
+          ></abp-validation-summary>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <abp-modal-footer
+      [cancelDisabled]="saving"
+      [saveDisabled]="!editFaultGroupForm.form.valid || saving"
+      (onCancelClick)="bsModalRef.hide()"
+    ></abp-modal-footer>
+  </form>
+</div>

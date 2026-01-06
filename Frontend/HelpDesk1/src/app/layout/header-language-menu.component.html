@@ -1,0 +1,49 @@
+<div class="relative inline-block">
+  <button #button class="p-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-[10%] hover:scale-110 transition-all duration-200" (click)="toggleDropdown($event)">
+    <i data-feather="globe" class="h-5 w-5 text-gray-600 dark:text-gray-300"></i>
+  </button>
+
+  @if (isOpen) {
+    <div class="absolute top-[calc(100%+8px)] right-0 bg-theme-lightcartbg dark:bg-themedark-cartbg rounded-md p-3 w-44 shadow-lg z-10 transition-opacity duration-200"  @dropdownAnimation>
+      <ul class="space-y-1">
+        <!-- Tanlangan til -->
+        <li class="flex items-center">
+          <a class="flex items-center w-full px-3 py-2 text-base font-semibold text-blue-600 dark:text-blue-400 cursor-default">
+            @if (currentLanguage.name === 'en') {
+              <img class="w-5 h-5 mr-4" src="assets/flags/us.svg" >
+            }
+            @else if (currentLanguage.name === 'ru') {
+            <img class="w-5 h-5 mr-4 " src="assets/flags/ru.svg">
+            }
+            @else if (currentLanguage.name === 'tg') {
+            <img class="w-5 h-5 mr-4 " src="assets/flags/tg.svg">
+            }
+            {{ currentLanguage.displayName }}
+          </a>
+        </li>
+        <!-- Chiziq -->
+        <li class="border-t border-gray-200 dark:border-gray-600 my-1"></li>
+        <!-- Qolgan tillar -->
+        @for (language of languages; track language.name) {
+          @if (language.name !== currentLanguage.name) {
+            <li class="flex items-center">
+              <a class="flex items-center w-full px-3 py-2 text-base text-gray-600 dark:text-gray-300 hover:bg-gray-100  dark:hover:bg-gray-500 rounded-md transition-colors duration-200 cursor-pointer"
+                 (click)="changeLanguage(language.name)">
+              @if (language.name === 'en') {
+                <img class="w-5 h-5 mr-4" src="assets/flags/us.svg" >
+              }
+              @else if (language.name === 'ru') {
+                <img class="w-5 h-5 mr-4 " src="assets/flags/ru.svg">
+              }
+              @else if (language.name === 'tg') {
+                <img class="w-5 h-5 mr-4 " src="assets/flags/tg.svg">
+              }
+              {{ language.displayName }}
+              </a>
+            </li>
+          }
+        }
+      </ul>
+    </div>
+  }
+</div>

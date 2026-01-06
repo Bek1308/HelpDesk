@@ -1,0 +1,282 @@
+<div [@routerTransition] class="container mx-auto mt-6 p-4 sm:p-6">
+    <div class="relative bg-theme-cardbg dark:bg-themedark-cardbg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-6 sm:p-8 pr-8 sm:pr-10 transition-all duration-300 ease-in-out">
+        <!-- Header -->
+        <div class="flex flex-col gap-4 mb-6 sm:flex-row sm:justify-between sm:items-center sm:gap-4">
+            <h2 class="text-xl font-semibold text-theme-bodycolor dark:text-themedark-bodycolor">{{ 'Issues' | localize }}</h2>
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3 sm:w-auto">
+                <input 
+                    type="text" 
+                    [(ngModel)]="filters.keyword" 
+                    (ngModelChange)="debouncedList()" 
+                    placeholder="{{ 'Search' | localize }}" 
+                    class="w-full sm:w-64 px-4 py-1.5 rounded-lg border border-theme-inputborder dark:border-themedark-inputborder bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm transition-all duration-300 ease-in-out"
+                >
+                <button 
+                    (click)="createIssue()" 
+                    class="w-full sm:w-auto bg-primary dark:bg-primary-300 text-white px-4 py-1.5 rounded-md hover:bg-primary-700 dark:hover:bg-primary-400 transition-all duration-300 ease-in-out font-medium text-sm flex items-center justify-center sm:justify-start space-x-2"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span>{{ 'CreateIssue' | localize }}</span>
+                </button>
+                <button 
+                    (click)="showColumnSelectionModal()" 
+                    class="text-theme-bodycolor dark:text-themedark-bodycolor hover:text-primary-500 dark:hover:text-primary-300 transition-all duration-300 ease-in-out"
+                    title="{{ 'SelectColumns' | localize }}"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
+                    </svg>
+                </button>
+                <button 
+                    (click)="showFilterModal()" 
+                    class="text-theme-bodycolor dark:text-themedark-bodycolor hover:text-primary-500 dark:hover:text-primary-300 transition-all duration-300 ease-in-out"
+                    title="{{ 'Filters' | localize }}"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1m-17 4h18m-14 4h10m-6 4h2"></path>
+                    </svg>
+                </button>
+                <button 
+                    *ngIf="filters.keyword || filters.subCategoryId || filters.serviceId || filters.terminalNumber || filters.agentFullName"
+                    (click)="clearFilters()" 
+                    class="w-full sm:w-auto bg-red-600 dark:bg-red-400 text-white px-4 py-1.5 rounded-md hover:bg-red-700 dark:hover:bg-red-500 transition-all duration-300 ease-in-out font-medium text-sm flex items-center justify-center sm:justify-start space-x-2"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    <span>{{ 'ClearFilters' | localize }}</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Separator -->
+        <div class="w-full h-px bg-gray-200 dark:bg-gray-700 mb-6"></div>
+
+        <!-- Loading Indicator -->
+        <div *ngIf="isLoading" class="text-center py-6">
+            <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary-500 border-r-transparent"></div>
+            <span class="ml-3 text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ 'Loading' | localize }}</span>
+        </div>
+
+        <!-- Table (Card layout for mobile) -->
+        <div *ngIf="!isLoading" class="space-y-4 relative">
+            <div class="hidden sm:block overflow-x-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg">
+                <table class="w-full border-collapse min-w-[800px]">
+                    <thead class="text-base">
+                        <tr class="bg-gray-100 dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor">
+                            <th *ngFor="let column of selectedColumns" (click)="sort(column.key)" class="p-4 text-left font-semibold cursor-pointer border-b-2 border-transparent min-w-[150px] max-w-[200px]" [ngClass]="{'border-primary dark:border-primary-300': sortField === column.key}">
+                                <span class="flex items-center space-x-2">
+                                    <span>{{ column.label | localize }}</span>
+                                    <svg class="w-4 h-4" [ngClass]="{'text-primary-500 dark:text-primary-300': sortField === column.key && sortOrder === 1, 'text-primary-600 dark:text-primary-300 rotate-180': sortField === column.key && sortOrder === -1}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                                    </svg>
+                                </span>
+                            </th>
+                            <th class="p-4 text-left font-semibold text-theme-bodycolor dark:text-themedark-bodycolor min-w-[60px]">{{ 'Actions' | localize }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let record of records; trackBy: trackById" class="border-b border-theme-inputborder dark:border-themedark-inputborder hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 ease-in-out">
+                            <td *ngFor="let column of selectedColumns" class="p-4 text-theme-bodycolor dark:text-themedark-bodycolor text-sm truncate">
+                                <span *ngIf="column.key === 'priorityName'" 
+                                      class="inline-block px-2 py-1 rounded text-white"
+                                      [ngStyle]="{'background-color': getPriorityColor(record)}">
+                                    {{ getColumnValue(record, column.key) }}
+                                </span>
+                                <span *ngIf="column.key === 'issueStatusName'" 
+                                      class="inline-block px-2 py-1 rounded text-white"
+                                      [ngClass]="getStatusColor(getColumnValue(record, column.key))">
+                                    {{ getColumnValue(record, column.key) }}
+                                </span>
+                                <span *ngIf="column.key === 'isresolved'" 
+                                      class="inline-block px-2 py-1 rounded text-white"
+                                      [ngClass]="{'bg-green-500': record.isResolved, 'bg-red-500': !record.isResolved}">
+                                    {{ getColumnValue(record, column.key) }}
+                                </span>
+                                <span *ngIf="column.key !== 'priorityName' && column.key !== 'issueStatusName' && column.key !== 'isresolved'">
+                                    {{ getColumnValue(record, column.key) }}
+                                </span>
+                            </td>
+                            <td class="p-4 relative">
+                                <button 
+                                    class="dropdown-button" 
+                                    [attr.data-id]="record.id"
+                                    (click)="toggleDropdown(record.id, $event)" 
+                                    class="text-theme-bodycolor dark:text-themedark-bodycolor hover:text-primary-500 dark:hover:text-primary-300 transition-all duration-300 ease-in-out"
+                                    title="{{ 'Actions' | localize }}"
+                                >
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="records.length === 0">
+                            <td [attr.colspan]="selectedColumns.length + 1" class="p-4 text-center text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ 'NoData' | localize }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Dropdown for Actions -->
+            <div *ngIf="dropdownOpenId !== null && dropdownPosition" 
+                 class="dropdown-menu fixed z-50 w-48 bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg"
+                 [ngStyle]="{'top': dropdownPosition.top + 'px', 'left': dropdownPosition.left + 'px'}">
+                <div 
+                    (click)="viewIssue(dropdownOpenId)" 
+                    class="px-3 py-2 text-sm text-green-500 dark:text-green-300 hover:bg-primary-100 dark:hover:bg-primary-900 hover:text-green-600 dark:hover:text-green-400 cursor-pointer flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                    <span>{{ 'Details' | localize }}</span>
+                </div>
+                <div 
+                    (click)="editIssue(dropdownOpenId)" 
+                    class="px-3 py-2 text-sm text-primary-600 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900 hover:text-primary-700 dark:hover:text-primary-400 cursor-pointer flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    <span>{{ 'Edit' | localize }}</span>
+                </div>
+                <div 
+                    (click)="delete(dropdownOpenId)" 
+                    class="px-3 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-primary-100 dark:hover:bg-primary-900 hover:text-red-600 dark:hover:text-red-300 cursor-pointer flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    <span>{{ 'Delete' | localize }}</span>
+                </div>
+            </div>
+
+            <!-- Mobile Card Layout -->
+            <div class="sm:hidden space-y-4 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg">
+                <ng-container *ngIf="records && records.length > 0; else noDataMobile">
+                    <div *ngFor="let record of records; trackBy: trackById" class="p-4 border border-theme-inputborder dark:border-themedark-inputborder rounded-lg bg-theme-cardbg dark:bg-themedark-cardbg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 ease-in-out">
+                        <div class="flex flex-col gap-2">
+                            <div *ngFor="let column of selectedColumns" class="flex justify-between">
+                                <span class="font-semibold text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ column.label | localize }}:</span>
+                                <span class="text-theme-bodycolor dark:text-themedark-bodycolor text-sm">
+                                    <span *ngIf="column.key === 'priorityName'" 
+                                          class="inline-block px-2 py-1 rounded text-white"
+                                          [ngStyle]="{'background-color': getPriorityColor(record)}">
+                                        {{ getColumnValue(record, column.key) }}
+                                    </span>
+                                    <span *ngIf="column.key === 'issueStatusName'" 
+                                          class="inline-block px-2 py-1 rounded text-white"
+                                          [ngClass]="getStatusColor(getColumnValue(record, column.key))">
+                                        {{ getColumnValue(record, column.key) }}
+                                    </span>
+                                    <span *ngIf="column.key === 'isresolved'" 
+                                          class="inline-block px-2 py-1 rounded text-white"
+                                          [ngClass]="{'bg-green-500': record.isResolved, 'bg-red-500': !record.isResolved}">
+                                        {{ getColumnValue(record, column.key) }}
+                                    </span>
+                                    <span *ngIf="column.key !== 'priorityName' && column.key !== 'issueStatusName' && column.key !== 'isresolved'">
+                                        {{ getColumnValue(record, column.key) }}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="flex gap-3 mt-2">
+                                <button (click)="viewIssue(record.id)" class="text-green-500 dark:text-green-300 hover:text-green-600 dark:hover:text-green-400 font-medium transition-all duration-300 ease-in-out text-sm flex items-center space-x-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                    <span>{{ 'Details' | localize }}</span>
+                                </button>
+                                <button (click)="editIssue(record.id)" class="text-primary-600 dark:text-primary-300 hover:text-primary-700 dark:hover:text-primary-400 font-medium transition-all duration-300 ease-in-out text-sm flex items-center space-x-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                    <span>{{ 'Edit' | localize }}</span>
+                                </button>
+                                <button (click)="delete(record.id)" class="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 font-medium transition-all duration-300 ease-in-out text-sm flex items-center space-x-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                    <span>{{ 'Delete' | localize }}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-template #noDataMobile>
+                    <div class="p-4 text-center text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ 'NoData' | localize }}</div>
+                </ng-template>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div *ngIf="records.length > 0" class="mt-6 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+            <div class="relative flex items-center gap-3">
+                <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ 'RowsPerPage' | localize }}</label>
+                <div class="relative inline-block w-20">
+                    <button type="button" (click)="isRecordsPerPageDropdownOpen = !isRecordsPerPageDropdownOpen"
+                        class="w-full px-3 py-1.5 rounded-lg border border-theme-inputborder dark:border-themedark-inputborder
+                            bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor
+                            flex justify-between items-center focus:outline-none focus:ring-1 focus:ring-primary-500 transition-all text-sm">
+                        <span>{{ recordsPerPage }}</span>
+                        <svg class="w-3.5 h-3.5 transform transition-transform duration-200" 
+                            [ngClass]="{ 'rotate-180': isRecordsPerPageDropdownOpen }"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <ul *ngIf="isRecordsPerPageDropdownOpen"
+                        class="absolute z-20 mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg border border-theme-inputborder dark:border-themedark-inputborder
+                            rounded-lg shadow-lg max-h-60 overflow-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor text-sm">
+                        <li *ngFor="let count of predefinedRecordsCountPerPage" 
+                            class="px-3 py-1.5 hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer" 
+                            (click)="recordsPerPage = count; onRecordsPerPageChange()">
+                            {{ count }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+                <button 
+                    [disabled]="currentPage === 0" 
+                    (click)="goToFirstPage()" 
+                    class="px-3 py-1.5 bg-gray-100 dark:bg-themedark-inputbg rounded-lg hover:bg-primary-200 dark:hover:bg-primary-700 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-themedark-bodycolor text-sm"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <button 
+                    [disabled]="currentPage === 0" 
+                    (click)="goToPreviousPage()" 
+                    class="px-3 py-1.5 bg-gray-100 dark:bg-themedark-inputbg rounded-lg hover:bg-primary-200 dark:hover:bg-primary-700 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-themedark-bodycolor text-sm"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <span class="px-3 py-1.5 text-theme-bodycolor dark:text-themedark-bodycolor font-medium text-sm">
+                    {{ currentPage + 1 }} / {{ totalPages }}
+                </span>
+                <button 
+                    [disabled]="currentPage >= totalPages - 1" 
+                    (click)="goToNextPage()" 
+                    class="px-3 py-1.5 bg-gray-100 dark:bg-themedark-inputbg rounded-lg hover:bg-primary-200 dark:hover:bg-primary-700 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-themedark-bodycolor text-sm"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+                <button 
+                    [disabled]="currentPage >= totalPages - 1" 
+                    (click)="goToLastPage()" 
+                    class="px-3 py-1.5 bg-gray-100 dark:bg-themedark-inputbg rounded-lg hover:bg-primary-200 dark:hover:bg-primary-700 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-themedark-bodycolor text-sm"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7m-8-14l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

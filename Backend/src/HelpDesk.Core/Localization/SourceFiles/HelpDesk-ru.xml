@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<localizationDictionary culture="ru">
+	<texts>
+		<text name="HomePage" value="Главная страница" />
+		<text name="About" value="О нас" />
+		<text name="WelcomeMessage" value="Добро пожаловать в HelpDesk!" />
+		<text name="FormIsNotValidMessage" value="Форма недействительна. Пожалуйста, проверьте и исправьте ошибки." />
+		<text name="TenantNameCanNotBeEmpty" value="Имя арендатора не может быть пустым" />
+		<text name="InvalidUserNameOrPassword" value="Неверное имя пользователя или пароль" />
+		<text name="ThereIsNoTenantDefinedWithName{0}" value="Арендатор с именем {0} не найден" />
+		<text name="TenantIsNotActive" value="Арендатор {0} не активен." />
+		<text name="UserIsNotActiveAndCanNotLogin" value="Пользователь {0} не активен и не может войти." />
+		<text name="UserEmailIsNotConfirmedAndCanNotLogin">Ваш адрес электронной почты не подтвержден. Вы не можете войти.</text>
+		<text name="UserLockedOutMessage">Учетная запись пользователя заблокирована. Попробуйте позже.</text>
+		<text name="PleaseEnterLoginInformation" value="Пожалуйста, введите данные для входа" />
+		<text name="TenancyName" value="Имя арендатора" />
+		<text name="UserNameOrEmail" value="Имя пользователя или email" />
+		<text name="Password" value="Пароль" />
+		<text name="ResetPassword" value="Сброс пароля" />
+		<text name="UpdatePassword" value="Обновить пароль" />
+		<text name="RememberMe" value="Запомнить меня" />
+		<text name="LogIn" value="Войти" />
+		<text name="LoginFailed" value="Ошибка входа!" />
+		<text name="NameSurname" value="Имя и фамилия" />
+		<text name="UserName" value="Имя пользователя" />
+		<text name="Name" value="Имя" />
+		<text name="Surname" value="Фамилия" />
+		<text name="EmailAddress" value="Электронная почта" />
+		<text name="Tenants" value="Арендаторы" />
+		<text name="SavedSuccessfully" value="Успешно сохранено" />
+		<text name="CreateNewTenant" value="Создать нового арендатора" />
+		<text name="AdminEmailAddress" value="Email администратора" />
+		<text name="AdminPassword" value="Пароль администратора" />
+		<text name="Save" value="Сохранить" />
+		<text name="Cancel" value="Отмена" />
+		<text name="TenantName_Regex_Description" value="Имя арендатора должно содержать не менее 2 символов, начинаться с буквы и продолжаться буквами, цифрами, тире или нижним подчеркиванием." />
+		<text name="DefaultPasswordIs" value="Пароль по умолчанию: {0}" />
+		<text name="CanBeEmptyToLoginAsHost" value="Можно оставить пустым для входа как host." />
+		<text name="Register" value="Регистрация" />
+		<text name="OrLoginWith" value="Или войдите через" />
+		<text name="WaitingForActivationMessage" value="Ваша учетная запись ожидает активации администратором системы." />
+		<text name="TenantSelection" value="Выбор арендатора" />
+		<text name="TenantSelection_Detail" value="Пожалуйста, выберите одного из следующих арендаторов." />
+		<text name="Logout" value="Выход" />
+		<text name="RegisterFormUserNameInvalidMessage">Пожалуйста, не вводите email как имя пользователя.</text>
+		<text name="DatabaseConnectionString" value="Строка подключения к базе данных" />
+		<text name="Users" value="Пользователи" />
+		<text name="IsActive" value="Активен" />
+		<text name="FullName" value="Полное имя" />
+		<text name="CreateNewUser" value="Создать нового пользователя" />
+		<text name="Yes" value="Да" />
+		<text name="No" value="Нет" />
+		<text name="Optional" value="Необязательно" />
+		<text name="LeaveEmptyToSwitchToHost">Оставьте пустым для входа как host</text>
+		<text name="CurrentTenant">Текущий арендатор</text>
+		<text name="NotSelected">Не выбрано</text>
+		<text name="Change">Изменить</text>
+		<text name="ChangeTenant">Сменить арендатора</text>
+		<text name="MultiLevelMenu">Многоуровневое меню</text>
+		<text name="Back">Назад</text>
+		<text name="SuccessfullyRegistered">Успешная регистрация</text>
+		<text name="WaitingForEmailActivation">Ваш email должен быть активирован</text>
+		<text name="Roles">Роли</text>
+		<text name="DisplayName">Отображаемое имя</text>
+		<text name="Edit">Редактировать</text>
+		<text name="Delete">Удалить</text>
+		<text name="CreateNewRole">Создать новую роль</text>
+		<text name="RoleName">Название роли</text>
+		<text name="Actions">Действия</text>
+		<text name="CouldNotCompleteLoginOperation">Не удалось завершить вход. Попробуйте позже.</text>
+		<text name="CouldNotValidateExternalUser">Не удалось подтвердить внешнего пользователя</text>
+		<text name="EditRole">Редактировать роль</text>
+		<text name="EditTenant">Редактировать арендатора</text>
+		<text name="EditUser">Редактировать пользователя</text>
+		<text name="TenantIdIsNotActive{0}">TenantId {0} не активен</text>
+		<text name="UnknownTenantId{0}">Неизвестный TenantId {0}</text>
+		<text name="ThisFieldIsRequired">Это поле обязательно</text>
+		<text name="PleaseWait">Пожалуйста, подождите...</text>
+		<text name="Administration">Администрирование</text>
+		<text name="ClearAll">Очистить все</text>
+		<text name="ClearOthers">Очистить другие</text>
+		<text name="LabelOptions">Параметры метки</text>
+		<text name="Permissions">Разрешения</text>
+		<text name="RoleDescription">Описание роли</text>
+		<text name="Refresh">Обновить</text>
+		<text name="Create">Создать</text>
+		<text name="UserDetails">Детали пользователя</text>
+		<text name="Details">Детали</text>
+		<text name="UserRoles">Роли пользователя</text>
+		<text name="ConfirmPassword">Подтверждение пароля</text>
+		<text name="Version">Версия</text>
+		<text name="On">Вкл</text>
+		<text name="Off">Выкл</text>
+		<text name="AreYouSureWantToDelete">Вы уверены, что хотите удалить {0}?</text>
+		<text name="SuccessfullyDeleted">Успешно удалено</text>
+		<text name="StartTyping">Начните ввод</text>
+		<text name="Skins">Темы</text>
+		<text name="Settings">Настройки</text>
+		<text name="Filter">Фильтр</text>
+		<text name="CurrentPassword">Текущий пароль</text>
+		<text name="NewPassword">Новый пароль</text>
+		<text name="ConfirmNewPassword">Подтверждение нового пароля</text>
+		<text name="PasswordsDoNotMatch">Пароли не совпадают</text>
+		<text name="PasswordsMustBeAtLeast8CharactersContainLowercaseUppercaseNumber">Пароли должны содержать минимум 8 символов, включая строчные, заглавные буквы и цифры</text>
+		<text name="UserDeleteWarningMessage">Пользователь {0} будет удален.</text>
+		<text name="RoleDeleteWarningMessage">Роль {0} будет удалена и отвязана от всех назначенных пользователей.</text>
+		<text name="TenantDeleteWarningMessage">Арендатор {0} будет удален.</text>
+		<text name="SearchWithThreeDot">Поиск...</text>
+		<text name="PleaseEnterAtLeastNCharacter">Введите не менее {0} символов</text>
+		<text name="PleaseEnterNoMoreThanNCharacter">Введите не более {0} символов</text>
+		<text name="InvalidEmailAddress">Неверный адрес электронной почты</text>
+		<text name="InvalidPattern">Недействительно</text>
+		<text name="PairsDoNotMatch">Не совпадает</text>
+		<text name="All">Все</text>
+		<text name="TotalRecordsCount">Всего: {0}</text>
+		<text name="Search">Поиск</text>
+		<text name="Clear">Очистить</text>
+		<text name="ResetPasswordStepOneInfo">1. Введите пароль администратора</text>
+		<text name="ResetPasswordStepTwoInfo">2. Скопируйте этот случайный пароль, чтобы отправить его пользователю</text>
+		<text name="UsersActivation">Активация пользователей</text>
+		<text name="403PageHeader">Доступ запрещен</text>
+		<text name="403PageDescription">У вас нет прав для доступа к этому ресурсу. Обратитесь к администратору.</text>
+		<text name="403PageButton">Вернуться на панель управления</text>
+
+
+		<text name="Light">Светлый</text>
+		<text name="Dark">Тёмный</text>
+		<text name="Default">По умолчанию</text>
+
+		<text name="Categories">Категории</text>
+		<text name="Services">Сервисы</text>
+		<text name="PriorityLevels">Уровни приоритета</text>
+		<text name="SubCategories">Подкатегории</text>
+
+		<text name="RowsPerPage">Строк на странице</text>
+
+		<text name="Title">Название</text>
+		<text name="Distance">Расстояние</text>
+		<text name="Score">Оценка</text>
+		<text name="Price">Цена</text>
+		<text name="CreateNewService">Создать новый сервис</text>
+		<text name="ServiceName">Название сервиса</text>
+		<text name="EditService">Редактировать сервис</text>
+		<text name="Management">Управление</text>
+		<text name="TitleRu">Название (рус.)</text>
+		<text name="CreateNewPriorityLevel">Создать новый уровень приоритета</text>
+		<text name="EditPriorityLevel">Редактировать уровень приоритета</text>
+		<text name="IssueTypes">Типы заявок</text>
+		<text name="Description">Описание</text>
+		<text name="DescriptionRu">Описание (рус.)</text>
+		<text name="CreateNewIssuesType">Создать новый тип заявки</text>
+		<text name="EditIssuesType">Редактировать тип заявки</text>
+		<text name="CallCenterIssues">Заявки колл-центра</text>
+		<text name="SubCategory">Подкатегория</text>
+		<text name="Service">Сервис</text>
+		<text name="WrongNumber">Неверный номер</text>
+		<text name="RightNumber">Верный номер</text>
+		<text name="TerminalNumber">Номер терминала</text>
+		<text name="Sum">Сумма перевода</text>
+		<text name="CancelledSum">Отменённая сумма</text>
+		<text name="Subscriber">Абонент</text>
+		<text name="Status">Статус</text>
+		<text name="CreatedBy">Создано</text>
+		<text name="UpdatedBy">Обновлено</text>
+		<text name="CreateCallCenterIssue">Создать заявку колл-центра</text>
+		<text name="EditCallCenterIssue">Редактировать заявку колл-центра</text>
+
+		<text name="AddIssues" value="Добавление заявки" />
+		
+		<!-- Categories -->
+		<text name="Category_RequestTypes" value="Типы Заявок" />
+		<text name="Category_CallCenter" value="Заявки Call Center" />
+		<text name="Category_Repair" value="Заявки на ремонт" />
+		<text name="Category_TechDepartment" value="Заявки тех. отдела" />
+
+		<!-- Common Fields -->
+		<text name="Field_Title" value="Заголовок" />
+		<text name="Field_Description" value="Описание" />
+		<text name="Field_Priority" value="Приоритет" />
+		<text name="Field_Status" value="Статус" />
+		<text name="Field_Assignees" value="Ответственные" />
+		<text name="Field_Deadline" value="Дедлайн" />
+
+		<!-- CallCenter Fields -->
+		<text name="Field_SubCategory" value="Подкатегория" />
+		<text name="Field_Service" value="Сервис" />
+		<text name="Field_WrongNumber" value="Неверный номер" />
+		<text name="Field_RightNumber" value="Правильный номер" />
+		<text name="Field_TerminalNumber" value="Номер терминала" />
+		<text name="Field_Sum" value="Сумма" />
+		<text name="Field_CancelledSum" value="Отмененная сумма" />
+		<text name="Field_Subscriber" value="Абонент" />
+
+		<!-- Repair Fields -->
+		<text name="Field_AgentFullName" value="ФИО агента" />
+		<text name="Field_AgentNumber" value="Номер агента" />
+		<text name="Field_Equipment" value="Оборудование" />
+		<text name="Field_SerialNumber" value="Серийный номер" />
+		<text name="Field_IssueDescription" value="Описание неисправности" />
+		<text name="Field_WorkAmount" value="Стоимость работы" />
+		<text name="Field_ReplacementParts" value="Замененные детали" />
+
+		<!-- Tech Department Fields -->
+		<text name="Field_TerminalName" value="Название терминала" />
+		<text name="Field_AgentId" value="ID агента" />
+		<text name="Field_IssueGroup" value="Группа неисправности" />
+		<text name="Field_TerminalLocation" value="Местоположение терминала" />
+		<text name="Field_City" value="Город" />
+
+		<!-- Permissions -->
+		<text name="Issues" value="Заявка" />
+		<text name="CreateCallCenterIssues" value="Создать заявку Call Center" />
+		<text name="CreateRepairIssues" value="Создать заявку на ремонт" />
+		<text name="CreateTechDepartmentIssues" value="Создать заявку тех. отдела" />
+		<text name="UpdateIssues" value="Обновить заявку" />
+		<text name="DeleteIssues" value="Удалить заявку" />
+		<text name="GetAllIssues" value="Посмотреть все заявки" />
+
+		<!--Issues History-->
+		<text name="FieldChangedDescription" value="{0} изменено с '{1}' на '{2}' пользователем {3}" />
+		<text name="FieldCreatedDescription" value="{0} создано со значением '{1}' пользователем {2}" />
+
+	</texts>
+</localizationDictionary>

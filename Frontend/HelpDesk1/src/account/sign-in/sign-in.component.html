@@ -1,0 +1,123 @@
+<div class="auth-main relative bg-theme-bodybg dark:bg-themedark-bodybg transition-colors duration-300 overflow-visible">
+  <button (click)="toggleTheme()" class="absolute top-4 right-4 text-sm text-primary-500 z-20">Toggle Theme</button>
+  
+  
+  <div class="auth-wrapper flex items-center w-full h-full min-h-screen relative overflow-visible">
+    <div class="auth-form flex items-center justify-center grow flex-col min-h-screen relative p-6 sm:p-8 overflow-visible">
+      <div class="w-full max-w-[350px] relative overflow-visible">
+
+        <!-- BACKGROUND DOIRALAR -->
+        <div class="auth-bg absolute inset-0 z-0 pointer-events-none overflow-visible">
+          <span class="absolute top-[-15vw] right-[-15vw] w-[60vw] h-[60vw] sm:top-[-140px] sm:right-[-160px] sm:w-[350px] sm:h-[350px] block rounded-full bg-gradient-to-br from-primary-500 to-green-400 opacity-4 animate-floating-1"></span>
+          <span class="absolute top-[15vw] right-[-10vw] w-8 h-8 sm:top-[150px] sm:right-[-150px] sm:w-5 sm:h-5 block rounded-full bg-primary opacity-50 animate-floating-2"></span>
+          <span class="absolute left-[-10vw] bottom-[15vw] w-8 h-8 sm:left-[-150px] sm:bottom-[150px] sm:w-5 sm:h-5 block rounded-full bg-warning-500 opacity-50 animate-floating-3"></span>
+          <span class="absolute left-[-15vw] bottom-[-15vw] w-[50vw] h-[50vw] sm:left-[-100px] sm:bottom-[-100px] sm:w-[300px] sm:h-[300px] block rounded-full bg-gradient-to-bl to-violet-600 from-primary-300 opacity-40 animate-floating-4"></span>
+        </div>
+
+       @if(errorMessage)
+{
+    <div class="flex items-center justify-between p-2 mb-4 h-12 bg-red-200 bg-opacity-30 border border-red-500 rounded-md relative z-10  backdrop-blur-sm shadow-sm">
+        <p class="text-red-600 dark:text-red-500 text-base font-medium">{{ errorMessageText }}</p>
+        <button (click)="toggleErrorMessage()" class="focus:outline-none">
+            <i data-feather="x" class="w-5 h-5 text-red-600"></i>
+        </button>
+    </div>
+}
+
+        <!-- LOGIN CARD -->
+        <div class="card w-full shadow-none rounded-lg bg-theme-cardbg dark:bg-themedark-cardbg text-theme-bodycolor dark:text-themedark-bodycolor relative z-10 bg-opacity-85">
+          <div class="card-body p-10 pt-4 ">
+            <!-- LOGO -->
+            <div class="flex items-center justify-center">
+              <!-- Logo -->
+              <div class="w-16 h-16 mb-4">
+                <img src="logo.png" alt="Logo" class="auth-logo dark:hidden w-full h-full object-contain" />
+                <img src="logo.png" alt="Logo" class="auth-logo hidden dark:block w-full h-full object-contain" />
+              </div>
+  
+              <!-- Text -->
+              <h1 class="text-xl font-semibold text-primary dark:text-primary tracking-wide">
+                Help<span class="text-slate-700 dark:text-white">DESK</span>
+              </h1>
+            </div>
+
+            <!-- LOGIN SARLAVHASI -->
+            <h4 class="text-center text-2xl font-medium text-black dark:text-white  mb-4">Login</h4>
+
+            <!-- EMAIL INPUT -->
+            <div class="mb-3 relative">
+              <input
+                type="email"
+                placeholder="Email Address"
+                class="form-control w-full px-4 py-2 pr-10 rounded bg-theme-inputbg dark:bg-themedark-inputbg border border-theme-inputborder dark:border-themedark-inputborder text-theme-bodycolor dark:text-themedark-bodycolor focus:outline-none focus:ring-2 focus:ring-blue-500"
+                [(ngModel)]="formData.email"
+              />
+              <!-- Search ikonka -->
+              <span class="absolute inset-y-0 right-0 flex items-center pr-3">
+                <i data-feather="search" class="w-5 h-5 text-gray-400 dark:text-gray-300"></i>
+              </span>
+            </div>
+
+            <!-- PASSWORD INPUT -->
+            <div class="mb-4 relative">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                placeholder="Password"
+                class="form-control w-full px-4 py-2 pr-10 rounded bg-theme-inputbg dark:bg-themedark-inputbg border border-theme-inputborder dark:border-themedark-inputborder text-theme-bodycolor dark:text-themedark-bodycolor focus:outline-none focus:ring-2 focus:ring-blue-500"
+                [(ngModel)]="formData.password"
+                (ngModelChange)="checkPasswordText($event)"
+                
+              />
+              <!-- Lock yoki Eye ikonka -->
+              <span class="absolute inset-y-0 right-0 flex items-center pr-3">
+                @if (hasTextPasword) {
+                  @if(showPassword)
+                  {
+                    <i class="w-5 h-5 text-gray-400 dark:text-gray-300 cursor-pointer" (click)="togglePasswordVisibility()">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="auto" height="auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </i>
+                  }
+                  @else 
+                  {
+                    <i class="w-5 h-5 text-gray-400 dark:text-gray-300 cursor-pointer" (click)="togglePasswordVisibility()">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="auto" height="auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye-off"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                    </i>
+
+                  }
+                  
+                }
+                @else {
+                  <i class="w-5 h-5 text-gray-400 dark:text-gray-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="auto" height="auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                  </i>
+                }
+              </span>
+            </div>
+
+            <!-- REMEMBER ME VA FORGOT PASSWORD -->
+            <div class="flex mt-2 justify-between items-center flex-wrap text-base">
+              <div class="form-check flex items-center">
+                <input type="checkbox" id="remember" class="mr-2" [(ngModel)]="formData.rememberMe" />
+                <label for="remember" class="text-theme-secondarytextcolor dark:text-themedark-secondarytextcolor">Remember me?</label>
+              </div>
+              <a href="#" class="text-primary-500">Forgot Password?</a>
+            </div>
+
+            <!-- LOGIN TUGMASI -->
+            <div class="mt-4 text-center">
+              <button
+                (click)="onSubmit()"
+                type="button"
+                class="btn btn-primary mx-auto shadow-2xl px-6 py-2 rounded bg-primary-500 text-white hover:bg-primary-600 transition flex items-center justify-center gap-2"
+                [disabled]="isLoading"
+              >
+                <i data-feather="log-in" class="w-5 h-5"></i>
+                Login
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

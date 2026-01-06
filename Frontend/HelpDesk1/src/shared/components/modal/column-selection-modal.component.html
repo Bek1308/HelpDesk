@@ -1,0 +1,59 @@
+<!-- Overlay -->
+<div
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity"
+  (click)="bsModalRef.hide()"
+></div>
+
+<!-- Modal -->
+<div
+  class="fixed inset-0 z-50 flex justify-center items-start pt-14 pointer-events-none"
+  (click)="$event.stopPropagation()"
+>
+  <form
+    class="relative w-full max-w-2xl bg-theme-cardbg dark:bg-themedark-cardbg rounded-md shadow-xl pt-4 pointer-events-auto flex flex-col max-h-[80vh]"
+    autocomplete="off"
+    #columnSelectionForm="ngForm"
+    (ngSubmit)="save()"
+  >
+    <!-- Modal Header -->
+    <abp-modal-header
+      [title]="'SelectColumns' | localize"
+      (onCloseClick)="bsModalRef.hide()"
+      class="w-full mb-4"
+    ></abp-modal-header>
+
+    <!-- Form Content (scrollable area with styled scrollbar) -->
+    <div
+      class="px-6 mt-2 overflow-y-auto flex-1 scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg"
+    >
+      <div class="grid grid-cols-1 gap-3 mb-4">
+        <div
+          *ngFor="let column of availableColumns"
+          class="flex items-center gap-2 py-1"
+        >
+          <input
+            type="checkbox"
+            class="form-check-input h-4 w-4 text-primary-500 border-theme-inputborder dark:border-themedark-inputborder focus:ring-primary-500"
+            [id]="column.key"
+            [name]="column.key"
+            [(ngModel)]="column.selected"
+            (ngModelChange)="onColumnSelectionChange()"
+          />
+          <label
+            class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+            [for]="column.key"
+          >
+            {{ column.label | localize }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <abp-modal-footer
+      [cancelDisabled]="saving"
+      [saveDisabled]="!columnSelectionForm.form.valid || saving"
+      (onCancelClick)="bsModalRef.hide()"
+    ></abp-modal-footer>
+  </form>
+</div>

@@ -1,0 +1,140 @@
+<!-- Payvand Card Fields -->
+<ng-container>
+  <!-- SubCategory Dropdown -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="subCategory"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'Field_SubCategory' | localize }}
+    </label>
+    <div class="col-span-2 relative dropdown">
+      <div
+        class="dropdown-toggle w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm cursor-pointer flex justify-between items-center"
+        (click)="toggleSubCategoryDropdown(); $event.stopPropagation()"
+      >
+        <span>{{ selectedSubCategory?.title || ('SelectSubCategory' | localize) }}</span>
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          ></path>
+        </svg>
+      </div>
+      <input
+        type="hidden"
+        name="subCategoryId"
+        [(ngModel)]="issue.payvandCardData.subCategoryId"
+        #subCategoryIdModel="ngModel"
+        required
+      />
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="subCategoryIdModel"
+      ></abp-validation-summary>
+      <div
+        *ngIf="isSubCategoryDropdownOpen"
+        class="absolute left-0 top-full mt-1 w-full bg-theme-cardbg dark:bg-themedark-cardbg
+               border border-theme-inputborder dark:border-themedark-inputborder rounded-md shadow-lg
+               max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500
+               scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg z-[1000]"
+      >
+        <input
+          type="text"
+          [(ngModel)]="subCategorySearch"
+          (ngModelChange)="filterSubCategories()"
+          (click)="stopPropagation($event)"
+          placeholder="{{ 'Search' | localize }}"
+          class="w-full px-3 py-2 border-b text-theme-bodycolor dark:text-themedark-bodycolor
+                 bg-theme-inputbg dark:bg-themedark-inputbg border-theme-inputborder
+                 dark:border-themedark-inputborder text-sm focus:outline-none"
+        />
+        <div
+          *ngFor="let subCategory of filteredSubCategories"
+          class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor
+                 hover:bg-primary-100 dark:hover:bg-primary-900 cursor-pointer"
+          (click)="selectSubCategory(subCategory); $event.stopPropagation()"
+        >
+          {{ subCategory.title }}
+        </div>
+        <div
+          *ngIf="!filteredSubCategories.length"
+          class="px-3 py-2 text-sm text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'NoSubCategoriesAvailable' | localize }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wrong Number -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="wrongNumber"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'Field_WrongNumber' | localize }}
+    </label>
+    <div class="col-span-2 relative">
+      <input
+        type="text"
+        name="wrongNumber"
+        id="wrongNumber"
+        required
+        [(ngModel)]="issue.payvandCardData.wrongNumber"
+        #wrongNumberModel="ngModel"
+        #wrongNumberEl
+        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm"
+      />
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="wrongNumberModel"
+        [controlEl]="wrongNumberEl"
+      ></abp-validation-summary>
+    </div>
+  </div>
+
+  <!-- Right Number -->
+  <div class="grid grid-cols-3 items-center gap-4 mb-4">
+    <label
+      for="rightNumber"
+      class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+    >
+      {{ 'Field_RightNumber' | localize }}
+    </label>
+    <div class="col-span-2 relative">
+      <input
+        type="text"
+        name="rightNumber"
+        id="rightNumber"
+        required
+        [(ngModel)]="issue.payvandCardData.rightNumber"
+        #rightNumberModel="ngModel"
+        #rightNumberEl
+        class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+               bg-theme-inputbg dark:bg-themedark-inputbg transition focus:outline-none focus:ring-1
+               focus:ring-primary-500 border-theme-inputborder dark:border-themedark-inputborder
+               text-sm"
+      />
+      <abp-validation-summary
+        class="text-red-500 mt-1 text-sm"
+        [control]="rightNumberModel"
+        [controlEl]="rightNumberEl"
+      ></abp-validation-summary>
+    </div>
+  </div>
+</ng-container>

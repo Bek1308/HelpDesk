@@ -1,0 +1,283 @@
+<div class="container mx-auto p-4 sm:p-6">
+    <div class="relative bg-theme-cardbg dark:bg-themedark-cardbg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-6 sm:p-8 transition-all duration-300 ease-in-out">
+        <!-- Header -->
+        <div class="flex flex-col gap-4 mb-6 sm:flex-row sm:justify-between sm:items-center sm:gap-4">
+            <h2 class="text-xl font-semibold text-theme-bodycolor dark:text-themedark-bodycolor">{{ 'Categories' | localize }}</h2>
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3 sm:w-auto">
+                <input 
+                    type="text" 
+                    [(ngModel)]="keyword" 
+                    (ngModelChange)="debouncedList()" 
+                    (input)="debouncedList()"
+                    placeholder="{{ 'Search' | localize }}" 
+                    class="w-full sm:w-64 px-4 py-1.5 rounded-lg border border-theme-inputborder dark:border-themedark-inputborder bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm transition-all duration-300 ease-in-out"
+                >
+                <button 
+                    (click)="createCategory()" 
+                    class="w-full sm:w-auto bg-primary dark:bg-primary-300 text-white px-4 py-1.5 rounded-md hover:bg-primary-700 dark:hover:bg-primary-400 transition-all duration-300 ease-in-out font-medium text-sm flex items-center justify-center sm:justify-start space-x-2"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span>{{ 'Create' | localize }}</span>
+                </button>
+                <!-- <button 
+                    (click)="advancedFiltersVisible = !advancedFiltersVisible" 
+                    class="w-full sm:w-auto bg-primary dark:bg-primary-300 text-white px-4 py-1.5 rounded-lg hover:bg-primary-700 dark:hover:bg-primary-400 transition-all duration-300 ease-in-out font-medium text-sm flex items-center justify-center sm:justify-start space-x-2"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                    </svg>
+                    <span>{{ 'Filters' | localize }}</span>
+                </button> -->
+            </div>
+        </div>
+
+        <!-- Separator -->
+        <div class="w-full h-px bg-gray-200 dark:bg-gray-700 mb-6"></div>
+
+        <!-- Advanced Filters -->
+        <!-- <div *ngIf="advancedFiltersVisible" class="mb-6">
+            <div class="relative inline-flex items-center gap-2">
+                <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ 'IsActive' | localize }}</label>
+                <div class="relative w-32">
+                    <button type="button" (click)="isActiveDropdownOpen = !isActiveDropdownOpen"
+                        class="w-full px-3 py-1.5 rounded-lg border border-theme-inputborder dark:border-themedark-inputborder
+                            bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor
+                            flex justify-between items-center focus:outline-none focus:ring-1 focus:ring-primary-500 transition-all text-sm">
+                        <span>{{ isActive === null ? ('All' | localize) : (isActive ? ('Yes' | localize) : ('No' | localize)) }}</span>
+                        <svg class="w-3.5 h-3.5 transform transition-transform duration-200" 
+                            [ngClass]="{ 'rotate-180': isActiveDropdownOpen }"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <ul *ngIf="isActiveDropdownOpen"
+                        class="absolute z-20 mt-1 w-full bg-theme-inputbg dark:bg-themedark-inputbg border border-theme-inputborder dark:border-themedark-inputborder
+                            rounded-lg shadow-lg max-h-60 overflow-auto text-theme-bodycolor dark:text-themedark-bodycolor scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-800 text-sm">
+                        <li class="px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" (click)="selectIsActive(null)">
+                            {{ 'All' | localize }}
+                        </li>
+                        <li class="px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" (click)="selectIsActive(true)">
+                            {{ 'Yes' | localize }}
+                        </li>
+                        <li class="px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" (click)="selectIsActive(false)">
+                            {{ 'No' | localize }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 mt-4">
+                <button 
+                    (click)="debouncedList()" 
+                    class="bg-primary dark:bg-primary-300 text-white px-4 py-1.5 rounded-lg hover:bg-primary-700 dark:hover:bg-primary-400 transition-all duration-300 ease-in-out font-medium text-sm flex items-center space-x-2"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <span>{{ 'Search' | localize }}</span>
+                </button>
+                <button 
+                    (click)="clearFilters()" 
+                    class="bg-gray-500 dark:bg-gray-600 text-white px-4 py-1.5 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out font-medium text-sm flex items-center space-x-2"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>{{ 'Clear' | localize }}</span>
+                </button>
+            </div>
+        </div> -->
+
+        <!-- Table (Card layout for mobile) -->
+        <div class="space-y-4 sm:overflow-x-auto">
+            <div class="hidden sm:block">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor">
+                            <th (click)="sort('title')" class="p-4 text-left font-semibold cursor-pointer border-b-2 border-transparent" [ngClass]="{'border-primary dark:border-primary-300': sortField === 'title'}">
+                                <span class="flex items-center space-x-2">
+                                    <span>{{ 'Title' | localize }}</span>
+                                    <svg class="w-4 h-4" [ngClass]="{'text-primary-500 dark:text-primary-300': sortField === 'title' && sortOrder === 1, 'text-primary-600 dark:text-primary-300 rotate-180': sortField === 'title' && sortOrder === -1}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                                    </svg>
+                                </span>
+                            </th>
+                            <th (click)="sort('distance')" class="p-4 text-left font-semibold cursor-pointer border-b-2 border-transparent" [ngClass]="{'border-primary dark:border-primary-300': sortField === 'distance'}">
+                                <span class="flex items-center space-x-2">
+                                    <span>{{ 'Distance' | localize }}</span>
+                                    <svg class="w-4 h-4" [ngClass]="{'text-primary-500 dark:text-primary-300': sortField === 'distance' && sortOrder === 1, 'text-primary-600 dark:text-primary-300 rotate-180': sortField === 'distance' && sortOrder === -1}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                                    </svg>
+                                </span>
+                            </th>
+                            <th (click)="sort('score')" class="p-4 text-left font-semibold cursor-pointer border-b-2 border-transparent" [ngClass]="{'border-primary dark:border-primary-300': sortField === 'score'}">
+                                <span class="flex items-center space-x-2">
+                                    <span>{{ 'Score' | localize }}</span>
+                                    <svg class="w-4 h-4" [ngClass]="{'text-primary-500 dark:text-primary-300': sortField === 'score' && sortOrder === 1, 'text-primary-600 dark:text-primary-300 rotate-180': sortField === 'score' && sortOrder === -1}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                                    </svg>
+                                </span>
+                            </th>
+                            <th (click)="sort('price')" class="p-4 text-left font-semibold cursor-pointer border-b-2 border-transparent" [ngClass]="{'border-primary dark:border-primary-300': sortField === 'price'}">
+                                <span class="flex items-center space-x-2">
+                                    <span>{{ 'Price' | localize }}</span>
+                                    <svg class="w-4 h-4" [ngClass]="{'text-primary-500 dark:text-primary-300': sortField === 'price' && sortOrder === 1, 'text-primary-600 dark:text-primary-300 rotate-180': sortField === 'price' && sortOrder === -1}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                                    </svg>
+                                </span>
+                            </th>
+                            <th class="p-4 text-left font-semibold text-theme-bodycolor dark:text-themedark-bodycolor">{{ 'Actions' | localize }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let record of records; trackBy: trackById" class="border-b border-theme-inputborder dark:border-themedark-inputborder hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 ease-in-out">
+                            <td class="p-4 text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ record.title }}</td>
+                            <td class="p-4 text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ record.distance }}</td>
+                            <td class="p-4 text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ record.score }}</td>
+                            <td class="p-4 text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ record.price }}</td>
+                            <td class="p-4 flex gap-3">
+                                <button (click)="editCategory(record)" class="text-primary-600 dark:text-primary-300 hover:text-primary-700 dark:hover:text-primary-400 font-medium transition-all duration-300 ease-in-out text-sm flex items-center space-x-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                    <span>{{ 'Edit' | localize }}</span>
+                                </button>
+                                <button (click)="delete(record)" class="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 font-medium transition-all duration-300 ease-in-out text-sm flex items-center space-x-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                    <span>{{ 'Delete' | localize }}</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="records.length === 0">
+                            <td colspan="6" class="p-4 text-center text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ 'NoData' | localize }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Card Layout -->
+            <div class="sm:hidden space-y-4">
+                <ng-container *ngIf="records && records.length > 0; else noDataMobile">
+                    <div *ngFor="let record of records; trackBy: trackById" class="p-4 border border-theme-inputborder dark:border-themedark-inputborder rounded-lg bg-theme-cardbg dark:bg-themedark-cardbg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 ease-in-out">
+                        <div class="flex flex-col gap-2">
+                            <div class="flex justify-between">
+                                <span class="font-semibold text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ 'Title' | localize }}:</span>
+                                <span class="text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ record.title }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="font-semibold text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ 'Distance' | localize }}:</span>
+                                <span class="text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ record.distance }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="font-semibold text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ 'Score' | localize }}:</span>
+                                <span class="text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ record.score }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="font-semibold text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ 'Price' | localize }}:</span>
+                                <span class="text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ record.price }}</span>
+                            </div>
+
+                            <div class="flex gap-3 mt-2">
+                                <button 
+                                    (click)="editCategory(record)" 
+                                    class="text-primary-600 dark:text-primary-300 hover:text-primary-700 dark:hover:text-primary-400 font-medium transition-all duration-300 ease-in-out text-sm flex items-center space-x-2"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                    <span>{{ 'Edit' | localize }}</span>
+                                </button>
+                                <button 
+                                    (click)="delete(record)" 
+                                    class="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 font-medium transition-all duration-300 ease-in-out text-sm flex items-center space-x-2"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                    <span>{{ 'Delete' | localize }}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-template #noDataMobile>
+                    <div class="p-4 text-center text-theme-bodycolor dark:text-themedark-bodycolor text-sm">{{ 'NoData' | localize }}</div>
+                </ng-template>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+            <div class="relative flex items-center gap-3">
+                <label class="text-sm font-medium text-theme-bodycolor dark:text-themedark-bodycolor">{{ 'RowsPerPage' | localize }}</label>
+                <div class="relative inline-block w-20">
+                    <button type="button" (click)="isRecordsPerPageDropdownOpen = !isRecordsPerPageDropdownOpen"
+                        class="w-full px-3 py-1.5 rounded-lg border border-theme-inputborder dark:border-themedark-inputborder
+                            bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor
+                            flex justify-between items-center focus:outline-none focus:ring-1 focus:ring-primary-500 transition-all text-sm">
+                        <span>{{ recordsPerPage }}</span>
+                        <svg class="w-3.5 h-3.5 transform transition-transform duration-200" 
+                            [ngClass]="{ 'rotate-180': isRecordsPerPageDropdownOpen }"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <ul *ngIf="isRecordsPerPageDropdownOpen"
+                        class="absolute z-20 mt-1 w-full bg-theme-inputbg dark:bg-themedark-inputbg border border-theme-inputborder dark:border-themedark-inputborder
+                            rounded-lg shadow-lg max-h-60 overflow-auto text-theme-bodycolor dark:text-themedark-bodycolor scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-800 text-sm">
+                        <li *ngFor="let count of predefinedRecordsCountPerPage" 
+                            class="px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" 
+                            (click)="recordsPerPage = count; onRecordsPerPageChange()">
+                            {{ count }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+                <button 
+                    [disabled]="currentPage === 0" 
+                    (click)="goToFirstPage()" 
+                    class="px-3 py-1.5 bg-gray-100 dark:bg-themedark-inputbg rounded-lg hover:bg-primary-200 dark:hover:bg-primary-700 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-themedark-bodycolor text-sm"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <button 
+                    [disabled]="currentPage === 0" 
+                    (click)="goToPreviousPage()" 
+                    class="px-3 py-1.5 bg-gray-100 dark:bg-themedark-inputbg rounded-lg hover:bg-primary-200 dark:hover:bg-primary-700 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-themedark-bodycolor text-sm"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <span class="px-3 py-1.5 text-theme-bodycolor dark:text-themedark-bodycolor font-medium text-sm">
+                    {{ currentPage + 1 }} / {{ totalPages }}
+                </span>
+                <button 
+                    [disabled]="currentPage >= totalPages - 1" 
+                    (click)="goToNextPage()" 
+                    class="px-3 py-1.5 bg-gray-100 dark:bg-themedark-inputbg rounded-lg hover:bg-primary-200 dark:hover:bg-primary-700 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-themedark-bodycolor text-sm"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+                <button 
+                    [disabled]="currentPage >= totalPages - 1" 
+                    (click)="goToLastPage()" 
+                    class="px-3 py-1.5 bg-gray-100 dark:bg-themedark-inputbg rounded-lg hover:bg-primary-200 dark:hover:bg-primary-700 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-themedark-bodycolor text-sm"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7m-8-14l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

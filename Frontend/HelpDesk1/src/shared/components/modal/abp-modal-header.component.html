@@ -1,0 +1,20 @@
+<div class="flex items-center justify-between border-b-2 border-gray-200 dark:border-gray-700 bg-theme-cardbg dark:bg-themedark-cardbg rounded-t-sm shadow-sm">
+  <!-- Modal Title -->
+  <h4 class="ml-5 mb-4 text-lg font-normal text-theme-bodycolor dark:text-gray-100">
+    {{ title() }}
+  </h4>
+
+  <!-- Close Button -->
+  <button
+    type="button"
+    aria-label="Close"
+    (click)="onCloseClick.emit($event)"
+    class="h-5 w-5 mr-5 mb-4 text-red-500 dark:red-gray-300 hover:red-gray-700 dark:hover:text-red-100 transition-colors rounded-full"
+  >
+    <span aria-hidden="true" class="text-xl hover:red-gray-700 dark:hover:text-red-100 transition-colors">
+        <i data-feather="x" class="hover:red-gray-700 dark:hover:text-red-100 transition-colors">
+
+        </i>
+    </span>
+  </button>
+</div>

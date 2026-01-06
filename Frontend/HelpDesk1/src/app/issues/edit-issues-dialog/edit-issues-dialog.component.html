@@ -1,0 +1,149 @@
+<!-- Overlay -->
+<div
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[900] transition-opacity"
+  (click)="bsModalRef.hide()"
+></div>
+
+<!-- Modal -->
+<div
+  class="fixed inset-0 z-[1000] flex justify-center items-start pt-2 pointer-events-none"
+  (click)="closeAllDropdowns()"
+>
+  <form
+    class="relative w-full max-w-2xl bg-theme-cardbg dark:bg-themedark-cardbg rounded-md shadow-xl pt-4 pointer-events-auto"
+    autocomplete="off"
+    #editIssueForm="ngForm"
+    (ngSubmit)="save()"
+  >
+    <!-- Modal Header -->
+    <abp-modal-header
+      [title]="'EditIssue' | localize"
+      (onCloseClick)="bsModalRef.hide()"
+      class="w-full mb-4"
+    ></abp-modal-header>
+
+    <!-- Form Content -->
+    <div class="px-6 mt-6 max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-theme-inputbg dark:scrollbar-track-themedark-inputbg">
+      <!-- Issue Category (Read-Only) -->
+      <div class="grid grid-cols-3 items-center gap-4 mb-4">
+        <label
+          for="issueCategory"
+          class="text-md font-medium text-theme-bodycolor dark:text-themedark-bodycolor"
+        >
+          {{ 'IssueCategory' | localize }}
+        </label>
+        <div class="col-span-2 relative">
+          <div
+            class="w-full px-3 py-2 rounded-md border text-theme-bodycolor dark:text-themedark-bodycolor
+                   bg-theme-inputbg dark:bg-themedark-inputbg border-theme-inputborder dark:border-themedark-inputborder
+                   text-sm cursor-not-allowed"
+          >
+            <span>{{ issue.issueCategory | localize }}</span>
+          </div>
+          <input
+            type="hidden"
+            name="issueCategory"
+            [(ngModel)]="issue.issueCategory"
+            #issueCategoryModel="ngModel"
+            required
+          />
+          <abp-validation-summary
+            class="text-red-500 mt-1 text-sm"
+            [control]="issueCategoryModel"
+          ></abp-validation-summary>
+        </div>
+      </div>
+
+      <!-- Common Fields (ClassicFieldsComponent) -->
+      <app-classic-fields
+        [issue]="issue"
+        [form]="editIssueForm"
+        [priorities]="priorities"
+        [statuses]="statuses"
+        [users]="users"
+        [issueId]="issueId"
+        [isEditing]="true"
+        (prioritySelected)="selectPriority($event)"
+        (statusSelected)="selectStatus($event)"
+        (assigneesSelected)="updateAssignees($event)"
+      ></app-classic-fields>
+
+      <!-- Category-Specific Fields -->
+      <ng-container *ngIf="issue.issueCategory">
+        <app-call-center-fields
+          *ngIf="issue.issueCategory === 'CallCenter'"
+          [issue]="issue"
+          [subCategories]="subCategories"
+          [services]="services"
+          [form]="editIssueForm"
+          (subCategorySelected)="selectSubCategory($event)"
+          (serviceSelected)="selectService($event)"
+        ></app-call-center-fields>
+        <app-repair-fields
+          *ngIf="issue.issueCategory === 'Repair'"
+          [issue]="issue"
+          [form]="editIssueForm"
+        ></app-repair-fields>
+        <app-tech-department-fields
+          *ngIf="issue.issueCategory === 'TechDepartment'"
+          [issue]="issue"
+          [issueGroups]="issueGroups"
+          [users]="users"
+          [form]="editIssueForm"
+          (agentSelected)="selectSingleAgent($event)"
+          (issueGroupSelected)="selectIssueGroup($event)"
+        ></app-tech-department-fields>
+        <app-atm-fields
+          *ngIf="issue.issueCategory === 'AtmIssues'"
+          [issue]="issue"
+          [subCategories]="subCategories"
+          [form]="editIssueForm"
+          (subCategorySelected)="selectSubCategory($event)"
+        ></app-atm-fields>
+        <app-payvand-card-fields
+          *ngIf="issue.issueCategory === 'PayvandCard'"
+          [issue]="issue"
+          [subCategories]="subCategories"
+          [form]="editIssueForm"
+          (subCategorySelected)="selectSubCategory($event)"
+        ></app-payvand-card-fields>
+        <app-payvand-wallet-fields
+          *ngIf="issue.issueCategory === 'PayvandWallet'"
+          [issue]="issue"
+          [subCategories]="subCategories"
+          [services]="services"
+          [form]="editIssueForm"
+          (subCategorySelected)="selectSubCategory($event)"
+          (serviceSelected)="selectService($event)"
+        ></app-payvand-wallet-fields>
+      </ng-container>
+
+      <!-- Issues Claims -->
+      <app-issues-claims
+        [issuesClaims]="issue.issuesClaims"
+        [form]="editIssueForm"
+        (claimsUpdated)="updateClaims($event)"
+      ></app-issues-claims>
+    </div>
+
+    <!-- Modal Footer -->
+    <abp-modal-footer
+      [cancelDisabled]="saving"
+      [saveDisabled]="!editIssueForm.form.valid || saving"
+      (onCancelClick)="bsModalRef.hide()"
+    ></abp-modal-footer>
+  </form>
+</div>
+
+<style>
+/* Custom styles for datetime-local input */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5) sepia(1) saturate(5) hue-rotate(175deg);
+  cursor: pointer;
+}
+input[type="datetime-local"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+</style>

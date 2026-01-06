@@ -1,0 +1,78 @@
+<div class="relative inline-block">
+  <button #button class="p-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-[10%] hover:scale-110 transition-all duration-200 relative" (click)="toggleDropdown()">
+    <i data-feather="bell" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600 dark:text-gray-300"></i>
+    <span class="notifications-badge bg-success-500 text-white rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center absolute -top-1 -right-1 text-xs">
+      {{ unreadNotificationsCount }}
+    </span>
+  </button>
+
+  @if (isOpen) {
+  <div 
+    @dropdownAnimation
+    class="bg-theme-lightcartbg dark:bg-themedark-cartbg rounded-md w-96 sm:w-[64vw] md:max-w-md shadow-lg z-[1024] absolute top-[calc(100%+8px)] right-[-35px] max-h-[590px] xs:max-h-[70vh] flex flex-col"
+  >
+    <div class="flex items-center justify-between p-6 pb-2 bg-theme-lightcartbg dark:bg-themedark-cartbg rounded-t-md">
+      <h6 class="text-base sm:text-xl md:text-xl text-gray-600 dark:text-gray-300">Notifications</h6>
+      <a class="text-sm sm:text-sm md:text-base text-primary-500 dark:text-primary-500 cursor-pointer hover:underline" (click)="markAllRead($event)">Mark all read</a>
+    </div>
+    <div class="mx-6 mr-2 pr-2 xs:mx-3 mb-2 space-y-2 overflow-y-auto flex-1 scrollbar-thin scrollbar-track-transparent  scrollbar-thumb-rounded scrollbar-thumb-scrollbar-light dark:scrollbar-thumb-scrollbar-dark">
+      @for (group of groupedNotifications | keyvalue; track group.key) {
+        <p class="text-[12px] md:text-base font-medium text-gray-500 dark:text-gray-300 sticky top-0 bg-theme-lightcartbg dark:bg-themedark-cartbg py-1">{{ group.key }}</p>
+        @for (notification of group.value; track notification.id) {
+          <div class="relative bg-gray-50 dark:bg-themedark-bodybg rounded-md transition-colors duration-200 hover:bg-info-50 dark:hover:bg-gray-600">
+            <div class="flex items-start  px-1">
+              @if (!notification.isRead) {
+                <div class="w-2 h-2 bg-red-500 rounded-full mt-2 mr-2 ml-1 xs:mr-2"></div>
+              }
+              @else {
+               <div class="w-2 h-2 bg-blue-400 rounded-full mt-2 mr-2 ml-1 xs:mr-2"></div>
+              }
+              <img class="w-10 h-10 md:h-12 md:w-12 rounded-full mr-3 mt-4 ml-4 xs:mr-2" src="assets/img/avatar.png" alt="avatar">
+              <div class="flex-1">
+                <div class="flex justify-between items-center">
+                  <p class="mt-4 text-sm md:text-xl sm:text-md text-gray-600 dark:text-gray-300" [innerHTML]="sanitizeHtml(notification.title)"></p>
+                  <p class=" mr-2 text-[9px] xs:text-[10px] text-gray-500 dark:text-gray-400">{{ notification.time }}</p>
+                </div>
+                <p class="mb-4 text-[14px]  md:text-base text-gray-600 dark:text-gray-300 mt-1" [innerHTML]="sanitizeHtml(notification.message)"></p>
+                @if (notification.isChallenge) {
+                  <div class="inline-flex space-x-1 xs:space-x-2 mt-1 xs:mt-2">
+                    <button 
+                      class="text-[px] xs:text-[10px] text-red-500 border border-red-500 rounded-md px-2 xs:px-3 py-0.5 xs:py-1 hover:bg-red-500 hover:text-white transition-colors duration-300"
+                      (click)="declineChallenge(notification.id)"
+                    >
+                      Decline
+                    </button>
+                    <button 
+                      class="text-[9px] xs:text-[10px] text-white bg-blue-500 rounded-md px-2 xs:px-3 py-0.5 xs:py-1 hover:bg-blue-600 transition-colors duration-300"
+                      (click)="acceptChallenge(notification.id)"
+                    >
+                      Accept
+                    </button>
+                  </div>
+                }
+              </div>
+              
+              <button class="p-0.5 xs:p-1 mt-1 hover:bg-gray-200 dark:hover:bg-gray-500 rounded-full" (click)="toggleActionMenu(notification.id)">
+                <i data-feather="more-vertical" class="h-4 w-4 xs:h-4 xs:w-4 text-gray-500 dark:text-gray-300"></i>
+              </button>
+            </div>
+            @if (selectedNotificationId === notification.id) {
+              <div class="absolute pb-1 right-1 xs:right-2 top-8 bg-white dark:bg-themedark-cartbg rounded-md shadow-lg z-20 w-28 xs:w-32">
+                <button class="w-full text-left px-2 xs:px-4 py-1 xs:py-2 text-[10px] xs:text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" (click)="markAsRead(notification.id)">
+                  Mark as read
+                </button>
+                <button class="w-full text-left px-2 xs:px-4 py-1 xs:py-2 text-[10px] xs:text-xs text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700" (click)="deleteNotification(notification.id)">
+                  Delete
+                </button>
+              </div>
+            }
+          </div>
+        }
+      }
+    </div>
+    <div class="flex justify-center items-center mx-2 xs:mx-3 mb-3 xs:mb-4">
+      <a class="text-[10px] xs:text-xs text-red-500 cursor-pointer hover:underline" (click)="clearAll($event)">Clear all Notifications</a>
+    </div>
+  </div>
+  }
+</div>
