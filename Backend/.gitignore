@@ -254,3 +254,4 @@ paket-files/
 src/HelpDesk.Web.Mvc/secrets.json
 src/HelpDesk.Web.Host/secrets.json
 src/HelpDesk.Migrator/secrets.json
+App_Data/
