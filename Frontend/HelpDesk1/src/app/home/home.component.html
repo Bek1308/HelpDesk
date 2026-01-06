@@ -1,1 +1,109 @@
-﻿<app-issue-workspace></app-issue-workspace>
+﻿
+<div class="min-h-screen p-4 sm:p-6 bg-transparent">
+  <div class="relative transition-all duration-300 ease-in-out">
+    <!-- Header -->
+    <div class="flex flex-col gap-3 mb-5 sm:flex-row sm:justify-between sm:items-center">
+      <div>
+        <h1 class="text-2xl font-bold text-theme-bodycolor dark:text-themedark-bodycolor">HelpDesk Dashboard</h1>
+        <p class="text-xs text-theme-bodycolor dark:text-themedark-bodycolor mt-1">06 Январь 2026</p>
+      </div>
+      <div class="flex gap-2 items-center">
+        <select class="px-3 py-1.5 text-xs rounded-lg border border-theme-inputborder dark:border-themedark-inputborder bg-theme-inputbg dark:bg-themedark-inputbg text-theme-bodycolor dark:text-themedark-bodycolor focus:outline-none focus:ring-1 focus:ring-primary-500">
+          <option>7 дней</option>
+          <option>30 дней</option>
+          <option>Год</option>
+        </select>
+        <button class="bg-primary-500 text-white px-4 py-1.5 text-xs rounded-lg hover:bg-primary-700 transition">Экспорт</button>
+      </div>
+    </div>
+
+    <!-- Separator -->
+    <div class="w-full h-px bg-gray-200 dark:bg-gray-700 mb-5"></div>
+
+    <!-- Key Metrics Cards -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+      <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-4 text-center">
+        <p class="text-xs font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Всего</p>
+        <p class="text-2xl font-bold text-theme-bodycolor dark:text-themedark-bodycolor mt-1">{{ mockData.totalTickets }}</p>
+        <p class="text-xs text-green-600 dark:text-green-400">+8.4%</p>
+      </div>
+      <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-4 text-center">
+        <p class="text-xs font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Открытые</p>
+        <p class="text-2xl font-bold text-orange-500 mt-1">{{ mockData.openTickets }}</p>
+        <p class="text-xs text-red-600 dark:text-red-400">+3.2%</p>
+      </div>
+      <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-4 text-center">
+        <p class="text-xs font-medium text-theme-bodycolor dark:text-themedark-bodycolor">В работе</p>
+        <p class="text-2xl font-bold text-blue-500 mt-1">{{ mockData.inProgressTickets }}</p>
+      </div>
+      <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-4 text-center">
+        <p class="text-xs font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Закрыто сегодня</p>
+        <p class="text-2xl font-bold text-green-500 mt-1">{{ mockData.closedToday }}</p>
+      </div>
+      <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-4 text-center">
+        <p class="text-xs font-medium text-theme-bodycolor dark:text-themedark-bodycolor">SLA</p>
+        <p class="text-2xl font-bold text-theme-bodycolor dark:text-themedark-bodycolor mt-1">{{ mockData.slaCompliance }}%</p>
+      </div>
+      <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-4 text-center">
+        <p class="text-xs font-medium text-theme-bodycolor dark:text-themedark-bodycolor">Среднее время</p>
+        <p class="text-2xl font-bold text-theme-bodycolor dark:text-themedark-bodycolor mt-1">{{ mockData.avgResolutionTime }}</p>
+      </div>
+    </div>
+
+    <!-- Charts Section – Yangi tartib: Топ категорий va Динамика yonma-yon -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
+      <!-- Chap taraf: Status, Priority va SLA (uchta kichik chart) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-4 h-64">
+          <h3 class="text-base font-semibold text-theme-bodycolor dark:text-themedark-bodycolor mb-2">Статусы</h3>
+          <canvas #statusChart></canvas>
+        </div>
+        <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-4 h-64">
+          <h3 class="text-base font-semibold text-theme-bodycolor dark:text-themedark-bodycolor mb-2">Приоритеты</h3>
+          <canvas #priorityChart></canvas>
+        </div>
+        <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-4 h-64 sm:col-span-2">
+          <h3 class="text-base font-semibold text-theme-bodycolor dark:text-themedark-bodycolor mb-2">SLA динамика (5 ой)</h3>
+          <canvas #slaChart></canvas>
+        </div>
+      </div>
+
+      <!-- O'ng taraf: Топ категорий va Динамика za 30 дней yonma-yon (ikkala chart ham kattaroq) -->
+      <div class="grid grid-cols-1 gap-5">
+        <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-4 h-72">
+          <h3 class="text-base font-semibold text-theme-bodycolor dark:text-themedark-bodycolor mb-2">Топ категорий</h3>
+          <canvas #categoryChart></canvas>
+        </div>
+        <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-4 h-72">
+          <h3 class="text-base font-semibold text-theme-bodycolor dark:text-themedark-bodycolor mb-2">Динамика за 30 дней</h3>
+          <canvas #trendChart></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Agents Table -->
+    <div class="bg-theme-cardbg dark:bg-themedark-cardbg rounded-lg shadow-[0_0_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_rgba(0,0,0,0.3)] p-4">
+      <h3 class="text-base font-semibold text-theme-bodycolor dark:text-themedark-bodycolor mb-3">Топ-5 исполнителей</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs text-theme-bodycolor dark:text-themedark-bodycolor">
+          <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-800">
+            <tr>
+              <th class="px-4 py-2 text-left">Имя</th>
+              <th class="px-4 py-2 text-center">Закрыто</th>
+              <th class="px-4 py-2 text-center">Время</th>
+              <th class="px-4 py-2 text-center">Рейтинг</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            <tr *ngFor="let agent of mockData.topAgents">
+              <td class="px-4 py-3">{{ agent.name }}</td>
+              <td class="px-4 py-3 text-center">{{ agent.closed }}</td>
+              <td class="px-4 py-3 text-center">{{ agent.avgTime }}</td>
+              <td class="px-4 py-3 text-center text-green-600 dark:text-green-400">{{ agent.rating }} ★</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
